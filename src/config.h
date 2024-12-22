@@ -1,29 +1,13 @@
 struct Config {
 
-#ifdef GENERIC
-    #define MAX_NUM_RELAYS 4
-#endif
+#define MAX_NUM_RELAYS 4
 
-#ifdef APWIKOGER
-    #define MAX_NUM_RELAYS 1
-#endif
-
-#ifdef DTWONDER
-    #define MAX_NUM_RELAYS 2
-#endif
-
-#ifdef LILYGO
-    #define MAX_NUM_RELAYS 1
-#endif
-
-#ifdef ETHERNET
-    IPAddress ipAddressEth = (192,168,5,1);
-    IPAddress gatewayIpEth = (0,0,0,0);
-    IPAddress subnetIpEth = (255,255,255,0);
-    IPAddress dnsIpEth = (0,0,0,0);
-    String ethlink = "not connected";
-    String ethmac = "";
-#endif
+IPAddress ipAddressEth = (192,168,5,1);
+IPAddress gatewayIpEth = (0,0,0,0);
+IPAddress subnetIpEth = (255,255,255,0);
+IPAddress dnsIpEth = (0,0,0,0);
+String ethlink = "not connected";
+String ethmac = "";
 
     int relayPin[MAX_NUM_RELAYS];
     uint8_t accessdeniedpin = 255;

@@ -375,8 +375,8 @@ void mqttPublishAccess(time_t accesstime, String const &isknown, int types[MAX_N
 {
 	//DynamicJsonDocument root(512);
 	JsonDocument root;
-	JsonArray access = root.createNestedArray("access");
-	JsonArray doorNames = root.createNestedArray("doorName");
+	JsonArray access = root["access"] = JsonArray();
+	JsonArray doorNames = root["doorName"] = JsonArray();
 	if (config.mqttEvents)
 	{
 		root["cmd"] = "log";
@@ -451,7 +451,7 @@ void getUserList()
 {
 	//DynamicJsonDocument root(512);
 	JsonDocument root;
-	JsonArray users = root.createNestedArray("list");
+	JsonArray users = root["list"] = JsonArray();
 	File dir = LittleFS.open("/P/");
 #ifdef DEBUG
 	Serial.println("[ INFO ] getUserList");
@@ -459,7 +459,7 @@ void getUserList()
 	File file = file.openNextFile();
 	while (file)
 	{
-		JsonObject item = users.createNestedObject();
+		JsonObject item = users.add<JsonObject>();
 		String uid = dir.name();
 		uid.remove(0, 3);
 		item["uid"] = uid;
@@ -549,8 +549,7 @@ void onMqttMessage(char *topic, char *payload, AsyncMqttClientMessageProperties 
 
 	// Check if IP was sent with command because we only
 	// accept commands where sent IP is equal to device IP
-	if (!mqttIncomingJson.containsKey("doorip"))
-	{
+	if (!mqttIncomingJson["doorip"].is<String>())	{
 		return;
 	}
 	
@@ -577,7 +576,7 @@ void onMqttMessage(char *topic, char *payload, AsyncMqttClientMessageProperties 
 	}
 
 	MqttMessage* incomingMessage = new MqttMessage;
-	if (mqttIncomingJson.containsKey("cmd")) {
+	if (!mqttIncomingJson["cmd"].is<String>()) {
 		strlcpy(incomingMessage->command, mqttIncomingJson["cmd"], sizeof(incomingMessage->command));
 	} else {
 #ifdef DEBUG
@@ -585,13 +584,13 @@ void onMqttMessage(char *topic, char *payload, AsyncMqttClientMessageProperties 
 #endif
 		return;
 	}
-	if (mqttIncomingJson.containsKey("uid")) {
+	if (!mqttIncomingJson["uid"].is<String>()) {
 		strlcpy(incomingMessage->uid, mqttIncomingJson["uid"], sizeof(incomingMessage->uid));
 	}
-	if (mqttIncomingJson.containsKey("user")) {
+	if (!mqttIncomingJson["users"].is<String>()) {
 		strlcpy(incomingMessage->user, mqttIncomingJson["user"], sizeof(incomingMessage->user));
 	}
-	if (mqttIncomingJson.containsKey("door")) {
+	if (!mqttIncomingJson["door"].is<String>()) {
 		strlcpy(incomingMessage->door, mqttIncomingJson["door"], sizeof(incomingMessage->door));
 	}
 	strlcpy(incomingMessage->serializedMessage, mqttBuffer, sizeof(mqttBuffer));

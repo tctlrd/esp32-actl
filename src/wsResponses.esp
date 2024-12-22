@@ -4,7 +4,7 @@ void ICACHE_FLASH_ATTR sendUserList(int page, AsyncWebSocketClient *client)
 	JsonDocument root;
 	root["command"] = "userlist";
 	root["page"] = page;
-	JsonArray users = root.createNestedArray("list");
+	JsonArray users = root["list"] = JsonArray();
 	
 	File dir = LittleFS.open("/P");
 	File file = dir.openNextFile();
@@ -21,7 +21,7 @@ void ICACHE_FLASH_ATTR sendUserList(int page, AsyncWebSocketClient *client)
 	{
 		if (i >= first && i < last)
 		{
-			JsonObject item = users.createNestedObject();
+			JsonObject item = users.add<JsonObject>();
 			String uid = file.name();
 			//uid.remove(0, 3);
 			item["uid"] = uid;
@@ -43,12 +43,12 @@ void ICACHE_FLASH_ATTR sendUserList(int page, AsyncWebSocketClient *client)
 			{
 				String username = json["user"];
 				String pincode = "";
-				if(json.containsKey("pincode"))
+				if(json["pincode"].is<String>())
 				{
 					pincode = String((const char*)json["pincode"]);
 				}
 				int picctype = config.wiegandbits;
-				if(json.containsKey("picctype"))
+				if(json["picctype"].is<String>())
 				{
 					picctype = json["picctype"];
 				}
@@ -62,7 +62,7 @@ void ICACHE_FLASH_ATTR sendUserList(int page, AsyncWebSocketClient *client)
 					int AccType = json[theKey];
 					item[theKey] = AccType;
 				}
-				unsigned long validsince = json.containsKey("validsince") ? json["validsince"] : 0;
+				unsigned long validsince = json["validsince"].is<unsigned long>() ? json["validsince"].as<unsigned long>() : 0;
 				unsigned long validuntil = json["validuntil"];
 				item["username"] = username;
 				item["validsince"] = validsince;
@@ -177,7 +177,7 @@ void ICACHE_FLASH_ATTR sendStatus(AsyncWebSocketClient *client)
 
 		root["ip"] = printIP(WiFi.softAPIP());
 		root["gateway"] = printIP(config.gatewayIp);
-		root["netmask"] = printIP(config.wifiApSubnet);
+		root["netmask"] = config.wifiApSubnet;
 	}
 	else
 	{
@@ -252,10 +252,10 @@ void ICACHE_FLASH_ATTR printScanResult(int networksFound)
 	//DynamicJsonDocument root(1024);
 	JsonDocument root;
 	root["command"] = "ssidlist";
-	JsonArray scan = root.createNestedArray("list");
+	JsonArray scan = root["list"] = JsonArray();
 	for (int i = 0; i < 5 && i < networksFound; ++i)
 	{
-		JsonObject item = scan.createNestedObject();
+		JsonObject item = scan.add<JsonObject>();
 
 		item["ssid"] = WiFi.SSID(indices[i]);
 		item["bssid"] = WiFi.BSSIDstr(indices[i]);

@@ -73,7 +73,7 @@ void ICACHE_FLASH_ATTR wiegandRead()
 			File file = dir.openNextFile();
 			while (file)
 			{
-				if (file.name() == uid)
+				if (String(file.name()) == uid)
 				{
 					usrfound = true;
 #ifdef DEBUG

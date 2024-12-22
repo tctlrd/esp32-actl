@@ -65,7 +65,7 @@ void ICACHE_FLASH_ATTR sendLogFile(int page, String fileName, int logFileType, A
 	if (logFileType == LOGTYPE_LATESTLOG)
 		root["command"] = "latestlist";
 	root["page"] = page;
-	JsonArray items = root.createNestedArray("list");
+	JsonArray items = root["list"] = JsonArray();
 
 	File logFile;
 
@@ -234,7 +234,7 @@ void ICACHE_FLASH_ATTR sendFileList(int page, AsyncWebSocketClient *client)
 	JsonDocument root;
 	root["command"] = "listfiles";
 	root["page"] = page;
-	JsonArray items = root.createNestedArray("list");
+	JsonArray items = root["list"] = JsonArray();
 
 	size_t first = (page - 1) * FILES_PER_PAGE;
 	size_t last = page * FILES_PER_PAGE;
@@ -250,7 +250,7 @@ void ICACHE_FLASH_ATTR sendFileList(int page, AsyncWebSocketClient *client)
 		{
 			if (numFiles >= first && numFiles < last)
 			{
-				JsonObject item = items.createNestedObject();
+				JsonObject item = items.add<JsonObject>();
 				item["filename"] = thisFileName;
 				item["filesize"] = file.size();
 			} // first, last
