@@ -31,7 +31,6 @@ bool eth_connected = false;
 
 #include "Arduino.h"
 #include <WiFi.h>
-#include "WiFiEventHandler.h"
 #include <SPI.h>
 #include <ESPmDNS.h>
 #define ARDUINOJSON_DECODE_UNICODE 0

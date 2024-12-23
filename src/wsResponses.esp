@@ -1,11 +1,10 @@
 void ICACHE_FLASH_ATTR sendUserList(int page, AsyncWebSocketClient *client)
 {
-	//DynamicJsonDocument root(1024);
 	JsonDocument root;
 	root["command"] = "userlist";
 	root["page"] = page;
-	JsonArray users = root["list"] = JsonArray();
-	
+	JsonArray users = root["list"].to<JsonArray>();
+
 	File dir = LittleFS.open("/P");
 	File file = dir.openNextFile();
 
@@ -14,7 +13,7 @@ void ICACHE_FLASH_ATTR sendUserList(int page, AsyncWebSocketClient *client)
 	int i = 0;
 
 #ifdef DEBUG
-		Serial.println(F("[ INFO ] Getting Userlist..."));
+	Serial.println(F("[ INFO ] Getting Userlist..."));
 #endif
 
 	while (file)
@@ -30,25 +29,20 @@ void ICACHE_FLASH_ATTR sendUserList(int page, AsyncWebSocketClient *client)
 			std::unique_ptr<char[]> buf(new char[size]);
 			f.readBytes(buf.get(), size);
 #ifdef DEBUG
-		Serial.print(F("[ INFO ] User File Name: "));
-		Serial.println(uid);
-		Serial.print(F("[ INFO ] User File Size: "));
-		Serial.println(file.size());
-		Serial.print(F("[ INFO ] User File "));
+			Serial.print(F("[ INFO ] User File Name: "));
+			Serial.println(uid);
+			Serial.print(F("[ INFO ] User File Size: "));
+			Serial.println(file.size());
+			Serial.print(F("[ INFO ] User File "));
 #endif
-			//DynamicJsonDocument json(512);
 			JsonDocument json;
 			auto error = deserializeJson(json, buf.get(), size);
 			if (!error)
 			{
 				String username = json["user"];
-				String pincode = "";
-				if(json["pincode"].is<String>())
-				{
-					pincode = String((const char*)json["pincode"]);
-				}
+				String pincode = json["pincode"].as<String>();
 				int picctype = config.wiegandbits;
-				if(json["picctype"].is<String>())
+				if(json["picctype"].is<int>())
 				{
 					picctype = json["picctype"];
 				}
@@ -62,7 +56,7 @@ void ICACHE_FLASH_ATTR sendUserList(int page, AsyncWebSocketClient *client)
 					int AccType = json[theKey];
 					item[theKey] = AccType;
 				}
-				unsigned long validsince = json["validsince"].is<unsigned long>() ? json["validsince"].as<unsigned long>() : 0;
+				unsigned long validsince = json["validsince"].as<unsigned long>();
 				unsigned long validuntil = json["validuntil"];
 				item["username"] = username;
 				item["validsince"] = validsince;
@@ -70,12 +64,12 @@ void ICACHE_FLASH_ATTR sendUserList(int page, AsyncWebSocketClient *client)
 				item["pincode"] = pincode;
 				item["picctype"] = picctype;
 #ifdef DEBUG
-		Serial.println(F(" OK"));
+				Serial.println(F(" OK"));
 #endif
 			} else 
 			{
 #ifdef DEBUG
-		Serial.println(F(" FAIL"));
+				Serial.println(F(" FAIL"));
 #endif
 			}
 		}
@@ -93,10 +87,8 @@ void ICACHE_FLASH_ATTR sendUserList(int page, AsyncWebSocketClient *client)
 		serializeJson(root, (char *)buffer->get(), len + 1);
 		if (client)
 		{
-			//wsMessageTicker.once_ms_scheduled(50, [client, buffer]() {
-				client->text(buffer);
-				client->text("{\"command\":\"result\",\"resultof\":\"userlist\",\"result\": true}");
-			//});
+			client->text(buffer);
+			client->text("{\"command\":\"result\",\"resultof\":\"userlist\",\"result\": true}");
 		}
 		else
 		{
@@ -107,14 +99,6 @@ void ICACHE_FLASH_ATTR sendUserList(int page, AsyncWebSocketClient *client)
 
 void ICACHE_FLASH_ATTR sendStatus(AsyncWebSocketClient *client)
 {
-	//struct ip_info info;
-	if (!LittleFS.totalBytes())
-	{
-#ifdef DEBUG
-		Serial.print(F("[ WARN ] Error getting info on LittleFS"));
-#endif
-	}
-	//DynamicJsonDocument root(512);
 	JsonDocument root;
 	root["command"] = "status";
 
@@ -194,7 +178,7 @@ void ICACHE_FLASH_ATTR sendStatus(AsyncWebSocketClient *client)
 
 		root["ip"] = printIP(WiFi.localIP());
 		root["gateway"] = printIP(WiFi.gatewayIP());
-		root["netmask"] = printIP(WiFi.subnetMask());
+		root["netmask"] = WiFi.subnetMask();
 	}
 
 #ifdef ETHERNET
@@ -205,7 +189,7 @@ void ICACHE_FLASH_ATTR sendStatus(AsyncWebSocketClient *client)
 
 	root["ipeth"] = printIP(ipaddreth);
 	root["gatewayeth"] = printIP(gwaddreth);
-	root["netmasketh"] = printIP(nmaddreth);
+	root["netmasketh"] = nmaddreth;
 	root["dnseth"] = printIP(dnseth);
 	root["maceth"] = config.ethmac;
 	root["speedeth"] = config.ethlink;
@@ -249,10 +233,9 @@ void ICACHE_FLASH_ATTR printScanResult(int networksFound)
 		}
 	}
 
-	//DynamicJsonDocument root(1024);
 	JsonDocument root;
 	root["command"] = "ssidlist";
-	JsonArray scan = root["list"] = JsonArray();
+	JsonArray scan = root["list"].to<JsonArray>();
 	for (int i = 0; i < 5 && i < networksFound; ++i)
 	{
 		JsonObject item = scan.add<JsonObject>();
@@ -276,7 +259,6 @@ void ICACHE_FLASH_ATTR printScanResult(int networksFound)
 
 void ICACHE_FLASH_ATTR sendTime(AsyncWebSocketClient *client)
 {
-	//DynamicJsonDocument root(512);
 	JsonDocument root;
 	root["command"] = "gettime";
 	root["epoch"] = epoch;

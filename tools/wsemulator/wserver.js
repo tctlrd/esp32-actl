@@ -1,4 +1,4 @@
-console.log("[ INFO ] Starting ESP32-RFID WebSocket Emulation Server");
+console.log("[ INFO ] Starting esp32-actl WebSocket Emulation Server");
 
 const WebSocket = require("ws");
 
@@ -377,7 +377,7 @@ var configfile = {
         "allowpincodeonly": 0,
     },
     "general": {
-        "hostnm": "esp32-rfid",
+        "hostnm": "esp32-actl",
         "restart": "86400",
         "pswd": "admin",
         "version": "v0.6",
