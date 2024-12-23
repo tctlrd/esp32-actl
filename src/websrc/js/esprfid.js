@@ -16,7 +16,7 @@ var config = {
     "command": "configfile",
     "network": {
         "bssid": "",
-        "ssid": "esp32-rfid",
+        "ssid": "esp32-actl",
         "wmode": 1,
         "hide": 0,
         "pswd": "",
@@ -58,7 +58,7 @@ var config = {
         "maxOpenDoorTime": 0
     },
     "general": {
-        "hostnm": "esp32-rfid",
+        "hostnm": "esp32-actl",
         "restart": 0,
         "pswd": "admin",
         "openinghours": [
@@ -979,11 +979,11 @@ function backupuser() {
 }
 
 function backupset() {
-  saveLogfile(config,"downloadSet","esp32-rfid-settings.json")
+  saveLogfile(config,"downloadSet","esp32-actl-settings.json")
 }
 
 function piccBackup(obj) {
-  saveLogfile(obj,"downloadUser","esp32-rfid-users.json")
+  saveLogfile(obj,"downloadUser","esp32-actl-users.json")
   backupstarted = false;
 }
 
@@ -1056,7 +1056,7 @@ function restoreUser() {
           alert("Not a valid backup file");
           return;
         }
-        if (json.type === "esp32-rfid-userbackup") {
+        if (json.type === "esp32-actl-userbackup") {
           var x = confirm("File seems to be valid, do you wish to continue?");
           if (x) {
             recordstorestore = json.list.length;
@@ -1733,7 +1733,7 @@ function socketMessageListener(evt) {
             $(".footable-show").click();
             $(".fooicon-remove").click();
           } else {
-            file.type = "esp32-rfid-userbackup";
+            file.type = "esp32-actl-userbackup";
             file.version = "v0.6";
             file.list = data;
             piccBackup(file);
@@ -1824,15 +1824,15 @@ function saveLogfile(obj,anchorElement,filename) {
 }
 
 function saveevent() {
-  file.type = "esp32-rfid-eventlog";
+  file.type = "esp32-actl-eventlog";
   file.list = data;
-  saveLogfile(file,"downloadEvent","esp32-rfid-eventlog.json");
+  saveLogfile(file,"downloadEvent","esp32-actl-eventlog.json");
 }
 
 function savelatest() {
-  file.type = "esp32-rfid-accesslog";
+  file.type = "esp32-actl-accesslog";
   file.list = data;
-  saveLogfile(file,"downloadLatest","esp32-rfid-accesslog.json");
+  saveLogfile(file,"downloadLatest","esp32-actl-accesslog.json");
 }
 
 function clearlatest() {
@@ -2401,7 +2401,7 @@ function login() {
 
 function getLatestReleaseInfo() {
 
-  $.getJSON("https://api.github.com/repos/pvtex/esp32-rfid/releases/latest").done(function(release) {
+  $.getJSON("https://api.github.com/repos/pvtex/esp32-actl/releases/latest").done(function(release) {
     var asset = release.assets[0];
     var downloadCount = 0;
     for (var i = 0; i < release.assets.length; i++) {

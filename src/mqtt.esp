@@ -147,7 +147,7 @@ void mqttPublishDiscovery()
 	JsonDocument dev;
 	dev["ids"] = WiFi.macAddress();
 	dev["name"] = config.deviceHostname;
-	dev["mf"] = "esp32-rfid";
+	dev["mf"] = "esp32-actl";
 	dev["sw"] = VERSION;
 	String num;
 	for (int n = 0; n < config.numRelays; n++)
