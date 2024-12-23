@@ -309,21 +309,30 @@ bool ICACHE_FLASH_ATTR loadConfiguration(Config &config)
 	}
 
 #ifdef ETHERNET
+	// Check if DHCP is enabled for Ethernet
 	config.dhcpEnabledEth = network["dhcpeth"] == 1;
-	if (network.containsKey("ipeth"))
-	{
+
+	// Check if the IP address is set
+	if (network["ipeth"].is<String>()) {
+		// Convert the IP address string to an IP address
 		config.ipAddressEth.fromString(network["ipeth"].as<const char*>());
 	}
-	if (network.containsKey("subneteth"))
-	{
+
+	// Check if the subnet mask is set
+	if (network["subneteth"].is<String>()) {
+		// Convert the subnet mask string to an IP address
 		config.subnetIpEth.fromString(network["subneteth"].as<const char*>());
 	}
-	if (network.containsKey("gatewayeth"))
-	{
+
+	// Check if the gateway IP address is set
+	if (network["gatewayeth"].is<String>()) {
+		// Convert the gateway IP address string to an IP address
 		config.gatewayIpEth.fromString(network["gatewayeth"].as<const char*>());
 	}
-	if (network.containsKey("dnseth"))
-	{
+
+	// Check if the DNS IP address is set
+	if (network["dnseth"].is<String>()) {
+		// Convert the DNS IP address string to an IP address
 		config.dnsIpEth.fromString(network["dnseth"].as<const char*>());
 	}
 #endif

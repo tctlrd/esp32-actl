@@ -222,8 +222,6 @@ void ICACHE_FLASH_ATTR setup()
 	
 	bool configured = false;
 	configured = loadConfiguration(config);
-	setupWifi(configured);
-	
 #ifdef ETHERNET
 	bool configuredeth = false;
 	configuredeth = configured;
@@ -245,6 +243,7 @@ void ICACHE_FLASH_ATTR setup()
 	sprintf(spd, "%dMbps %s", ETH.linkSpeed(), linkduplex);
 	config.ethlink = (String)spd;
 #endif
+	setupWifi(configured);
 
 	setupMqtt();
 	setupWebServer();
