@@ -25,7 +25,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
 
-#define VERSION "0.2.0"
+#define VERSION "0.3.0"
 
 #ifdef ETHERNET
 bool eth_connected = false;
@@ -57,7 +57,7 @@ Config config;
 
 #include <WiegandNG.h>
 
-File fsUploadFile;                      //Hält den aktuellen Upload
+File fsUploadFile;
 
 WiegandNG wg;
 
