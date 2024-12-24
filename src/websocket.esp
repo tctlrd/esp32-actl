@@ -196,7 +196,7 @@ void ICACHE_FLASH_ATTR processWsMessage(WsMessage *incomingMessage)
 	Serial.println("[ WIFI ] starting Scan");
 #endif
 		int networksfound = 0;	
-		WiFi.scanNetworks(true);
+		WiFi.scanNetworks();
 		while (WiFi.scanComplete() == WIFI_SCAN_RUNNING)
 		{
 			delay(100);
