@@ -190,8 +190,8 @@ bool connectSTA(const char *ssid, const char *password, byte bssid[6])
 void disableWifi()
 {
     wiFiUptimeMillis = 0;
-    WiFi.disconnect(true);
-    WiFi.softAPdisconnect(true);
+    WiFi.disconnect();
+    WiFi.softAPdisconnect();
 #ifdef DEBUG
     Serial.println(F("Turn wifi off."));
 #endif
