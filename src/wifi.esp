@@ -220,7 +220,7 @@ void setupWifi(bool configured)
     {
         WiFi.setHostname("esp32-actl");
         fallbacktoAPMode();
-    } 
+    }
     else
     {
         WiFi.onEvent(onWifiConnect, ARDUINO_EVENT_WIFI_STA_CONNECTED);

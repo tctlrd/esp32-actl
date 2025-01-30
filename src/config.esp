@@ -4,7 +4,8 @@ bool loadConfiguration(Config &config)
 	if (!configFile)
 	{
 #ifdef DEBUG
-		Serial.println(F("[ WARN ] Failed to open config file"));
+		Serial.println(F("[ WARN ] Failed to open config file; recreating!"));
+		LittleFS.open("/config.json", "w");
 #endif
 		return false;
 	}

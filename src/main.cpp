@@ -315,7 +315,6 @@ void setup()
 	config.ethlink = (String)spd;
 #endif
 	setupWifi(configured);
-
 	setupMqtt();
 	setupWebServer();
 	writeEvent("INFO", "sys", "System setup completed, running", "");
