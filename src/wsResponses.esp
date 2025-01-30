@@ -1,4 +1,4 @@
-void ICACHE_FLASH_ATTR sendUserList(int page, AsyncWebSocketClient *client)
+void sendUserList(int page, AsyncWebSocketClient *client)
 {
 	JsonDocument root;
 	root["command"] = "userlist";
@@ -22,9 +22,9 @@ void ICACHE_FLASH_ATTR sendUserList(int page, AsyncWebSocketClient *client)
 		{
 			JsonObject item = users.add<JsonObject>();
 			String uid = file.name();
-			//uid.remove(0, 3);
+			// uid.remove(0, 3);
 			item["uid"] = uid;
-			File f = LittleFS.open("/P/"+uid, "r");
+			File f = LittleFS.open("/P/" + uid, "r");
 			size_t size = f.size();
 			std::unique_ptr<char[]> buf(new char[size]);
 			f.readBytes(buf.get(), size);
@@ -42,7 +42,7 @@ void ICACHE_FLASH_ATTR sendUserList(int page, AsyncWebSocketClient *client)
 				String username = json["user"];
 				String pincode = json["pincode"].as<String>();
 				int picctype = config.wiegandbits;
-				if(json["picctype"].is<int>())
+				if (json["picctype"].is<int>())
 				{
 					picctype = json["picctype"];
 				}
@@ -66,7 +66,8 @@ void ICACHE_FLASH_ATTR sendUserList(int page, AsyncWebSocketClient *client)
 #ifdef DEBUG
 				Serial.println(F(" OK"));
 #endif
-			} else 
+			}
+			else
 			{
 #ifdef DEBUG
 				Serial.println(F(" FAIL"));
@@ -97,7 +98,7 @@ void ICACHE_FLASH_ATTR sendUserList(int page, AsyncWebSocketClient *client)
 	}
 }
 
-void ICACHE_FLASH_ATTR sendStatus(AsyncWebSocketClient *client)
+void sendStatus(AsyncWebSocketClient *client)
 {
 	JsonDocument root;
 	root["command"] = "status";
@@ -110,9 +111,10 @@ void ICACHE_FLASH_ATTR sendStatus(AsyncWebSocketClient *client)
 	root["heap"] = ESP.getFreeHeap();
 	root["heapsize"] = ESP.getHeapSize();
 	uint32_t chipID = 0;
-	for (int i = 0; i < 17; i = i + 8) {
-    	chipID |= ((ESP.getEfuseMac() >> (40 - i)) & 0xff) << i;
-  	}
+	for (int i = 0; i < 17; i = i + 8)
+	{
+		chipID |= ((ESP.getEfuseMac() >> (40 - i)) & 0xff) << i;
+	}
 	root["chipid"] = chipID;
 	root["cpu"] = ESP.getCpuFreqMHz();
 	root["cpumodel"] = ESP.getChipModel();
@@ -122,21 +124,24 @@ void ICACHE_FLASH_ATTR sendStatus(AsyncWebSocketClient *client)
 	root["availsize"] = ESP.getFreeSketchSpace();
 	root["availlittlefs"] = LittleFS.totalBytes() - LittleFS.usedBytes();
 	root["littlefssize"] = LittleFS.totalBytes();
-	
+
 	int d = uptimeSeconds / 86400;
 	int rem = uptimeSeconds % 86400;
-  	int h = rem / 3600;
-  	int remh = rem % 3600;
-  	int m = remh / 60;
-  	int s = remh % 60;
+	int h = rem / 3600;
+	int remh = rem % 3600;
+	int m = remh / 60;
+	int s = remh % 60;
 	char uptimebuffer[15];
-	if ( d == 0 ) 
+	if (d == 0)
 	{
 		sprintf(uptimebuffer, "%02d:%02d:%02d", h, m, s);
-	} else if ( d == 1 )
+	}
+	else if (d == 1)
 	{
 		sprintf(uptimebuffer, "%d day %02d:%02d:%02d", d, h, m, s);
-	} else {
+	}
+	else
+	{
 		sprintf(uptimebuffer, "%d days %02d:%02d:%02d", d, h, m, s);
 	}
 
@@ -167,8 +172,8 @@ void ICACHE_FLASH_ATTR sendStatus(AsyncWebSocketClient *client)
 	{
 		root["ssid"] = WiFi.SSID();
 		float RssI = WiFi.RSSI();
-  		RssI = isnan(RssI) ? -100.0 : RssI;
-  		RssI = min(max(2 * (RssI + 100.0), 0.0), 100.0);
+		RssI = isnan(RssI) ? -100.0 : RssI;
+		RssI = min(max(2 * (RssI + 100.0), 0.0), 100.0);
 		char rssibuffer[9];
 		sprintf(rssibuffer, "%.0f", RssI);
 		root["rssi"] = String(WiFi.RSSI()) + "dBm" + " (" + rssibuffer + "%)";
@@ -182,10 +187,10 @@ void ICACHE_FLASH_ATTR sendStatus(AsyncWebSocketClient *client)
 	}
 
 #ifdef ETHERNET
-	IPAddress ipaddreth = config.ipAddressEth; 
-	IPAddress gwaddreth = config.gatewayIpEth; 
+	IPAddress ipaddreth = config.ipAddressEth;
+	IPAddress gwaddreth = config.gatewayIpEth;
 	IPAddress nmaddreth = config.subnetIpEth;
-	IPAddress dnseth = config.dnsIpEth; 
+	IPAddress dnseth = config.dnsIpEth;
 
 	root["ipeth"] = printIP(ipaddreth);
 	root["gatewayeth"] = printIP(gwaddreth);
@@ -211,10 +216,10 @@ void ICACHE_FLASH_ATTR sendStatus(AsyncWebSocketClient *client)
 	}
 }
 
-void ICACHE_FLASH_ATTR printScanResult(int networksFound)
+void printScanResult(int networksFound)
 {
 	// sort by RSSI
-	int n = networksFound+1;
+	int n = networksFound + 1;
 	int indices[n];
 	int skip[n];
 	for (int i = 0; i < networksFound; i++)
@@ -245,7 +250,7 @@ void ICACHE_FLASH_ATTR printScanResult(int networksFound)
 		item["rssi"] = WiFi.RSSI(indices[i]);
 		item["channel"] = WiFi.channel(indices[i]);
 		item["enctype"] = WiFi.encryptionType(i);
-		item["hidden"] = false; //WiFi.isHidden(indices[i]) ? true : false;
+		item["hidden"] = false; // WiFi.isHidden(indices[i]) ? true : false;
 	}
 	size_t len = measureJson(root);
 	AsyncWebSocketMessageBuffer *buffer = ws.makeBuffer(len); //  creates a buffer (len + 1) for you.
@@ -257,7 +262,7 @@ void ICACHE_FLASH_ATTR printScanResult(int networksFound)
 	WiFi.scanDelete();
 }
 
-void ICACHE_FLASH_ATTR sendTime(AsyncWebSocketClient *client)
+void sendTime(AsyncWebSocketClient *client)
 {
 	JsonDocument root;
 	root["command"] = "gettime";

@@ -196,7 +196,7 @@ char *numberToHexStr(char *out, unsigned char *in, size_t length)
 	return ptr;
 }
 
-void ICACHE_FLASH_ATTR setup()
+void setup()
 {
 #ifdef DEBUG
 	Serial.begin(115200);
@@ -330,7 +330,7 @@ void ICACHE_FLASH_ATTR setup()
 	desfire.setCardKeyVersion(CARD_KEY_VERSION);
 }
 
-void ICACHE_RAM_ATTR loop()
+void IRAM_ATTR loop()
 {
 	currentMillis = millis();
 	deltaTime = currentMillis - previousLoopMillis;
@@ -371,7 +371,7 @@ void ICACHE_RAM_ATTR loop()
 		{
 			if (activateRelay[currentRelay])
 			{
-				if (digitalRead(config.relayPin[currentRelay]) == !config.relayType[currentRelay]) // currently OFF, need to switch ON
+				if (io2.digitalRead(config.relayPin[currentRelay]) == !config.relayType[currentRelay]) // currently OFF, need to switch ON
 				{
 					mqttPublishIo("lock" + String(currentRelay), "UNLOCKED");
 #ifdef DEBUG
@@ -379,7 +379,7 @@ void ICACHE_RAM_ATTR loop()
 					Serial.println(millis());
 					Serial.printf("activating relay %d now\n", currentRelay);
 #endif
-					digitalWrite(config.relayPin[currentRelay], config.relayType[currentRelay]);
+					io2.setRelay(config.relayPin[currentRelay] + 1, config.relayType[currentRelay]);
 				}
 				else // currently ON, need to switch OFF
 				{
@@ -389,7 +389,7 @@ void ICACHE_RAM_ATTR loop()
 					Serial.println(millis());
 					Serial.printf("deactivating relay %d now\n", currentRelay);
 #endif
-					digitalWrite(config.relayPin[currentRelay], !config.relayType[currentRelay]);
+					io2.setRelay(config.relayPin[currentRelay] + 1, !config.relayType[currentRelay]);
 				}
 				activateRelay[currentRelay] = false;
 			}
@@ -405,7 +405,7 @@ void ICACHE_RAM_ATTR loop()
 				Serial.println(millis());
 				Serial.printf("activating relay %d now\n", currentRelay);
 #endif
-				digitalWrite(config.relayPin[currentRelay], config.relayType[currentRelay]);
+				io2.setRelay(config.relayPin[currentRelay] + 1, config.relayType[currentRelay]);
 				previousMillis = millis();
 				activateRelay[currentRelay] = false;
 				deactivateRelay[currentRelay] = true;
@@ -425,7 +425,7 @@ void ICACHE_RAM_ATTR loop()
 				Serial.print("mili : ");
 				Serial.println(millis());
 #endif
-				digitalWrite(config.relayPin[currentRelay], !config.relayType[currentRelay]);
+				io2.setRelay(config.relayPin[currentRelay] + 1, !config.relayType[currentRelay]);
 				deactivateRelay[currentRelay] = false;
 			}
 		}

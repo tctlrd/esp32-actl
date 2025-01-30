@@ -1,8 +1,8 @@
 void extern mqttPublishEvent(JsonDocument *root);
 
-void ICACHE_FLASH_ATTR writeEvent(String type, String src, String desc, String data)
+void writeEvent(String type, String src, String desc, String data)
 {
-	//DynamicJsonDocument root(512);
+	// DynamicJsonDocument root(512);
 	JsonDocument root;
 	root["type"] = type;
 	root["src"] = src;
@@ -27,9 +27,9 @@ void ICACHE_FLASH_ATTR writeEvent(String type, String src, String desc, String d
 #endif
 }
 
-void ICACHE_FLASH_ATTR writeLatest(String uid, String username, int acctype, int access = ACCESS_GRANTED)
+void writeLatest(String uid, String username, int acctype, int access = ACCESS_GRANTED)
 {
-	//DynamicJsonDocument root(512);
+	// DynamicJsonDocument root(512);
 	JsonDocument root;
 	root["uid"] = uid;
 	root["username"] = username;
@@ -49,7 +49,7 @@ size_t lastPos; // position counter for fast seek
 #define FILES_PER_PAGE 10.0
 #define MIN_LITTLEFS_BYTES 4096
 
-void ICACHE_FLASH_ATTR sendLogFile(int page, String fileName, int logFileType, AsyncWebSocketClient *client)
+void sendLogFile(int page, String fileName, int logFileType, AsyncWebSocketClient *client)
 {
 
 	// if we are reading the first page then we reset
@@ -58,7 +58,7 @@ void ICACHE_FLASH_ATTR sendLogFile(int page, String fileName, int logFileType, A
 	if (page == 1)
 		lastPos = 0;
 	float pages;
-	//DynamicJsonDocument root(2048);
+	// DynamicJsonDocument root(2048);
 	JsonDocument root;
 	if (logFileType == LOGTYPE_EVENTLOG)
 		root["command"] = "eventlist";
@@ -122,7 +122,7 @@ void ICACHE_FLASH_ATTR sendLogFile(int page, String fileName, int logFileType, A
 	}
 }
 
-void ICACHE_FLASH_ATTR logMaintenance(String action, String filename, AsyncWebSocketClient *client)
+void logMaintenance(String action, String filename, AsyncWebSocketClient *client)
 {
 #ifdef DEBUG
 	Serial.printf("[DEBUG] Log Maintenance Action: %s on %s\n", action.c_str(), filename.c_str());
@@ -183,12 +183,12 @@ void ICACHE_FLASH_ATTR logMaintenance(String action, String filename, AsyncWebSo
 
 			/*
 			esp_task_wdt_config_t twdt_config1 = {
-        		.timeout_ms = 2000,
-        		.idle_core_mask = uint32_t((1 << ESP.getChipCores()) - 1),    // Bitmask of all cores
-        		.trigger_panic = true,
-    		};
+				.timeout_ms = 2000,
+				.idle_core_mask = uint32_t((1 << ESP.getChipCores()) - 1),    // Bitmask of all cores
+				.trigger_panic = true,
+			};
 			esp_task_wdt_init(&twdt_config1); // (2, true) enable panic so ESP32 restarts
-  			esp_task_wdt_add(NULL);
+			esp_task_wdt_add(NULL);
 			*/
 
 			// read the first half of the file
@@ -198,7 +198,7 @@ void ICACHE_FLASH_ATTR logMaintenance(String action, String filename, AsyncWebSo
 				String item = String();
 				item = logFile.readStringUntil('\n');
 				newFile1.println(item);
-				//esp_task_wdt_reset(); // tell the watchdog we're still doing stuff
+				// esp_task_wdt_reset(); // tell the watchdog we're still doing stuff
 			}
 
 			// read the rest
@@ -208,7 +208,7 @@ void ICACHE_FLASH_ATTR logMaintenance(String action, String filename, AsyncWebSo
 				String item = String();
 				item = logFile.readStringUntil('\n');
 				newFile2.println(item);
-				//esp_task_wdt_reset(); // no reset please
+				// esp_task_wdt_reset(); // no reset please
 			}
 
 			logFile.close();
@@ -216,20 +216,20 @@ void ICACHE_FLASH_ATTR logMaintenance(String action, String filename, AsyncWebSo
 			newFile2.close();
 		}
 	}
-/*
-	esp_task_wdt_config_t twdt_config2 = {
-        .timeout_ms = 5000,
-        .idle_core_mask = uint32_t((1 << ESP.getChipCores()) - 1),    // Bitmask of all cores
-        .trigger_panic = true,
-    };
-	esp_task_wdt_init(&twdt_config2); //5, true
-*/
+	/*
+		esp_task_wdt_config_t twdt_config2 = {
+			.timeout_ms = 5000,
+			.idle_core_mask = uint32_t((1 << ESP.getChipCores()) - 1),    // Bitmask of all cores
+			.trigger_panic = true,
+		};
+		esp_task_wdt_init(&twdt_config2); //5, true
+	*/
 	if (client)
 	{
 		client->text("{\"command\":\"result\",\"resultof\":\"logfileMaintenance\",\"result\": true}");
 	}
 }
-void ICACHE_FLASH_ATTR sendFileList(int page, AsyncWebSocketClient *client)
+void sendFileList(int page, AsyncWebSocketClient *client)
 {
 	JsonDocument root;
 	root["command"] = "listfiles";
@@ -240,7 +240,7 @@ void ICACHE_FLASH_ATTR sendFileList(int page, AsyncWebSocketClient *client)
 	size_t last = page * FILES_PER_PAGE;
 	size_t numFiles = 0;
 
-  	File dir = LittleFS.open("/");
+	File dir = LittleFS.open("/");
 	File file = dir.openNextFile();
 
 	while (file)
@@ -272,14 +272,14 @@ void ICACHE_FLASH_ATTR sendFileList(int page, AsyncWebSocketClient *client)
 	}
 }
 
-void ICACHE_FLASH_ATTR sendEventLog(int page, String fileName, AsyncWebSocketClient *client)
+void sendEventLog(int page, String fileName, AsyncWebSocketClient *client)
 {
 	if (fileName.length() == 0)
 		fileName = "/eventlog.json";
 	sendLogFile(page, fileName, LOGTYPE_EVENTLOG, client);
 }
 
-void ICACHE_FLASH_ATTR sendLatestLog(int page, String fileName, AsyncWebSocketClient *client)
+void sendLatestLog(int page, String fileName, AsyncWebSocketClient *client)
 {
 	if (fileName.length() == 0)
 		fileName = "/latestlog.json";

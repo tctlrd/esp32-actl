@@ -38,10 +38,10 @@ void addWsMessageToQueue(AsyncWebSocketClient *client, int messageSize)
 	}
 }
 
-void ICACHE_FLASH_ATTR processWsMessage(WsMessage *incomingMessage)
+void processWsMessage(WsMessage *incomingMessage)
 {
 	// We should always get a JSON object (stringfied) from browser, so parse it
-	//DynamicJsonDocument root(2448);
+	// DynamicJsonDocument root(2448);
 	JsonDocument root;
 	AsyncWebSocketClient *client = incomingMessage->client;
 	// cast to const char * to avoid in-place editing of serializedMessage
@@ -59,8 +59,8 @@ void ICACHE_FLASH_ATTR processWsMessage(WsMessage *incomingMessage)
 	// Web Browser sends some commands, check which command is given
 	const char *command = root["command"];
 #ifdef DEBUG
-		Serial.print(F("[ INFO ] Processing WS Message: "));
-		Serial.println(command);
+	Serial.print(F("[ INFO ] Processing WS Message: "));
+	Serial.println(command);
 #endif
 	// Check whatever the command is and act accordingly
 	if (strcmp(command, "remove") == 0)
@@ -80,7 +80,7 @@ void ICACHE_FLASH_ATTR processWsMessage(WsMessage *incomingMessage)
 		if (f)
 		{
 #ifdef DEBUG
-		Serial.println(F("[ INFO ] Opened config file, writing config"));
+			Serial.println(F("[ INFO ] Opened config file, writing config"));
 #endif
 			size_t len = 0;
 			while (incomingMessage->serializedMessage[len] != '\0' && len < MAX_WS_BUFFER)
@@ -132,7 +132,7 @@ void ICACHE_FLASH_ATTR processWsMessage(WsMessage *incomingMessage)
 	}
 	else if (strcmp(command, "logMaintenance") == 0)
 	{
-		logMaintenance(root["action"],root["filename"], client);
+		logMaintenance(root["action"], root["filename"], client);
 	}
 	else if (strcmp(command, "clearevent") == 0)
 	{
@@ -160,7 +160,7 @@ void ICACHE_FLASH_ATTR processWsMessage(WsMessage *incomingMessage)
 		{
 			serializeJson(root, f);
 #ifdef DEBUG
-		Serial.println(F("[ DEBUG ] userfile saved"));
+			Serial.println(F("[ DEBUG ] userfile saved"));
 #endif
 		}
 		f.close();
@@ -193,9 +193,9 @@ void ICACHE_FLASH_ATTR processWsMessage(WsMessage *incomingMessage)
 	else if (strcmp(command, "scan") == 0)
 	{
 #ifdef DEBUG
-	Serial.println("[ WIFI ] starting Scan");
+		Serial.println("[ WIFI ] starting Scan");
 #endif
-		int networksfound = 0;	
+		int networksfound = 0;
 		WiFi.scanNetworks();
 		while (WiFi.scanComplete() == WIFI_SCAN_RUNNING)
 		{
@@ -240,7 +240,7 @@ void ICACHE_FLASH_ATTR processWsMessage(WsMessage *incomingMessage)
 }
 
 // Handles WebSocket Events
-void ICACHE_FLASH_ATTR onWsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type, void *arg, uint8_t *data, size_t len)
+void onWsEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type, void *arg, uint8_t *data, size_t len)
 {
 	if (type == WS_EVT_ERROR)
 	{
@@ -253,14 +253,14 @@ void ICACHE_FLASH_ATTR onWsEvent(AsyncWebSocket *server, AsyncWebSocketClient *c
 		AwsFrameInfo *info = (AwsFrameInfo *)arg;
 		if (info->final && info->index == 0 && info->len == len)
 		{
-			//the whole message is in a single frame and we got all of it's data
+			// the whole message is in a single frame and we got all of it's data
 			client->_tempObject = malloc(info->len);
 			memcpy((uint8_t *)(client->_tempObject), data, len);
 			addWsMessageToQueue(client, info->len + 1);
 		}
 		else
 		{
-			//message is comprised of multiple frames or the frame is split into multiple packets
+			// message is comprised of multiple frames or the frame is split into multiple packets
 			if (info->index == 0)
 			{
 				if (info->num == 0 && client->_tempObject == NULL)
