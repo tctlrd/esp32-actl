@@ -272,27 +272,25 @@ void ICACHE_FLASH_ATTR setup()
 		Serial.print(F("[ INFO ] Searching."));
 #endif
 		io2.detect();
+#ifdef DEBUG
 		if (io2.getError() == IO2_NOT_FOUND)
 		{
-#ifdef DEBUG
 			Serial.println("[ ERROR ] MOD-IO2 not found");
-#endif
-			while (true)
-				;
 		}
-#ifdef DEBUG
 		Serial.print(F("[ INFO ] located at 0x"));
 		Serial.println(io2.getAddress(), HEX);
-		Serial.println(F("[ INFO ] Testing relays now!"));
-		io2.setRelay(RELAY1, ON);
-		delay(700);
-		io2.setRelay(RELAY1, OFF);
-		delay(700);
-		io2.setRelay(RELAY2, ON);
-		delay(700);
-		io2.setRelay(RELAY2, OFF);
 #endif
 	}
+#ifdef DEBUG
+	Serial.println(F("[ INFO ] Testing MOD-IO2 relays now!"));
+	io2.setRelay(RELAY1, ON);
+	delay(700);
+	io2.setRelay(RELAY1, OFF);
+	delay(700);
+	io2.setRelay(RELAY2, ON);
+	delay(700);
+	io2.setRelay(RELAY2, OFF);
+#endif
 	bool configured = false;
 	configured = loadConfiguration(config);
 #ifdef ETHERNET
