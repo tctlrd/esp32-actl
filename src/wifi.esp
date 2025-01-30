@@ -219,7 +219,7 @@ void setupWifi(bool configured)
     if (!configured)
     {
         WiFi.setHostname("esp32-actl");
-        fallbacktoAPMode();
+        // fallbacktoAPMode();
     }
     else
     {

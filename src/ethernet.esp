@@ -18,7 +18,7 @@ void onEthConnect(WiFiEvent_t event, WiFiEventInfo_t inf0)
 
 void onEthDisconnect(WiFiEvent_t event, WiFiEventInfo_t inf0)
 {
-	if ( !ETH.linkUp() )
+	if (!ETH.linkUp())
 	{
 		return;
 	}
@@ -40,11 +40,11 @@ void onEthGotIP(WiFiEvent_t event, WiFiEventInfo_t info)
 	config.dnsIpEth = ETH.dnsIP();
 	config.ethmac = ETH.macAddress();
 	String linkduplex = "HD";
-	if (ETH.fullDuplex() == true) 
+	if (ETH.fullDuplex() == true)
 	{
 		linkduplex = "FD";
 	}
-	char spd[12]; 
+	char spd[12];
 	sprintf(spd, "%dMbps %s", ETH.linkSpeed(), linkduplex);
 	config.ethlink = (String)spd;
 	eth_connected = true;
@@ -69,13 +69,15 @@ void setupEth(bool configured)
 	if (!configured)
 	{
 		ETH.setHostname("ESP32-ACTL");
-	} else
+	}
+	else
 	{
 		ETH.setHostname(config.deviceHostname);
-		
-		if (!config.dhcpEnabledEth) 
+
+		if (!config.dhcpEnabledEth)
 		{
 			ETH.config(config.ipAddressEth, config.gatewayIpEth, config.subnetIpEth, config.dnsIpEth);
+			Serial.println("[ INFO ] Using config ");
 		}
 	}
 	WiFi.onEvent(onEthConnect, WiFiEvent_t::ARDUINO_EVENT_ETH_CONNECTED);
