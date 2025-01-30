@@ -339,8 +339,6 @@ void ICACHE_RAM_ATTR loop()
 
 	// relay
 
-	IO2 io2(0x20); // set I2C address of MOD-IO2
-
 	for (int currentRelay = 0; currentRelay < config.numRelays; currentRelay++)
 	{
 		if (config.lockType[currentRelay] == LOCKTYPE_CONTINUOUS) // Continuous relay mode
