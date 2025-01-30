@@ -34,6 +34,7 @@ bool eth_connected = false;
 #include "Arduino.h"
 #include "Wire.h"
 #include <IO2.h>
+IO2 io2 = IO2(); // set I2C address of MOD-IO2
 #include <WiFi.h>
 #include <SPI.h>
 #include <ESPmDNS.h>
@@ -54,9 +55,7 @@ bool eth_connected = false;
 #include <Update.h>
 #include "magicnumbers.h"
 #include "config.h"
-
 Config config;
-
 #include <WiegandNG.h>
 
 File fsUploadFile;
@@ -264,7 +263,36 @@ void ICACHE_FLASH_ATTR setup()
 	{
 		LittleFS.mkdir("/P");
 	}
-
+	// MOD-IO2 setup
+	io2.readID();
+	if (io2.getError() != IO2_SUCCESS)
+	{
+#ifdef DEBUG
+		Serial.println(F("[ INFO ] MOD-IO2 is not responding at default I2C address"));
+		Serial.print(F("[ INFO ] Searching."));
+#endif
+		io2.detect();
+		if (io2.getError() == IO2_NOT_FOUND)
+		{
+#ifdef DEBUG
+			Serial.println("[ ERROR ] MOD-IO2 not found");
+#endif
+			while (true)
+				;
+		}
+#ifdef DEBUG
+		Serial.print(F("[ INFO ] located at 0x"));
+		Serial.println(io2.getAddress(), HEX);
+		Serial.println(F("[ INFO ] Testing relays now!"));
+		io2.setRelay(RELAY1, ON);
+		delay(700);
+		io2.setRelay(RELAY1, OFF);
+		delay(700);
+		io2.setRelay(RELAY2, ON);
+		delay(700);
+		io2.setRelay(RELAY2, OFF);
+#endif
+	}
 	bool configured = false;
 	configured = loadConfiguration(config);
 #ifdef ETHERNET
