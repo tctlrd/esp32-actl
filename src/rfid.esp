@@ -8,8 +8,8 @@ String v1uid = "";
 String username = "";
 bool wiegandAvailable = false;
 
-#define WIEGAND_ENT "b" 
-#define WIEGAND_ESC "a" 
+#define WIEGAND_ENT "b"
+#define WIEGAND_ESC "a"
 
 enum RfidStates
 {
@@ -45,7 +45,7 @@ void rfidPrepareRead()
 	loadWiegandData();
 }
 
-void ICACHE_FLASH_ATTR wiegandRead()
+void wiegandRead()
 {
 	if (wiegandAvailable && rfidState == waitingRfid)
 	{
@@ -86,7 +86,7 @@ void ICACHE_FLASH_ATTR wiegandRead()
 			}
 
 			if (usrfound)
-			{	
+			{
 				File f = LittleFS.open(filename, "r");
 #ifdef DEBUG
 				Serial.println(F("[ DEBUG ] UserFile opened"));
@@ -95,7 +95,7 @@ void ICACHE_FLASH_ATTR wiegandRead()
 				std::unique_ptr<char[]> buf(new char[size]);
 				f.readBytes(buf.get(), size);
 				f.close();
-				//DynamicJsonDocument json(512);
+				// DynamicJsonDocument json(512);
 				JsonDocument json;
 				auto error = deserializeJson(json, buf.get(), size);
 				if (error)
@@ -110,19 +110,21 @@ void ICACHE_FLASH_ATTR wiegandRead()
 				rfidState = cardSwiped;
 				if (config.pinCodeRequested)
 				{
-					if(json["pincode"] == "")
+					if (json["pincode"] == "")
 					{
 						rfidState = pinCodeEntered;
-					} else
+					}
+					else
 					{
 						keyTimer = millis();
 						ledWaitingOn();
 					}
 				}
-			} else
+			}
+			else
 			{
 #ifdef DEBUG
-			Serial.println(F("[ DEBUG ] UserFile not found"));
+				Serial.println(F("[ DEBUG ] UserFile not found"));
 #endif
 				cooldown = millis() + COOLDOWN_MILIS;
 				rfidState = waitingRfid;
@@ -156,17 +158,16 @@ void rfidRead()
 	wiegandRead();
 }
 
-
 /*
  *  Try and read a PIN code from Wiegand hardware
  */
 void pinCodeRead()
 {
 	if (config.readertype != READER_WIEGAND ||
-			!wiegandAvailable ||
-			(!config.pinCodeRequested && rfidState == cardSwiped) ||
-			(!config.pinCodeOnly && rfidState == waitingRfid) ||
-			rfidState == pinCodeEntered)
+		!wiegandAvailable ||
+		(!config.pinCodeRequested && rfidState == cardSwiped) ||
+		(!config.pinCodeOnly && rfidState == waitingRfid) ||
+		rfidState == pinCodeEntered)
 	{
 		return;
 	}
@@ -189,9 +190,10 @@ void pinCodeRead()
 			currentInput = currentInput + String(wg.getCode(bool(config.removeParityBits)));
 			keyTimer = millis();
 			ledWaitingOn();
-		} else if (keyTimer > 0) // if we are waitingProcessing on input still
+		}
+		else if (keyTimer > 0) // if we are waitingProcessing on input still
 		{
-			if(String(wg.getCode(bool(config.removeParityBits)), HEX) == WIEGAND_ESC) // esc, abort pincode
+			if (String(wg.getCode(bool(config.removeParityBits)), HEX) == WIEGAND_ESC) // esc, abort pincode
 			{
 #ifdef DEBUG
 				Serial.println("Keycode escape, aborting pincode entry");
@@ -200,14 +202,15 @@ void pinCodeRead()
 				processingState = cancelled;
 				cooldown = millis() + COOLDOWN_MILIS;
 			}
-			if(String(wg.getCode(bool(config.removeParityBits)), HEX) == WIEGAND_ENT) // enter, process pincode
+			if (String(wg.getCode(bool(config.removeParityBits)), HEX) == WIEGAND_ENT) // enter, process pincode
 			{
 				pinCode = currentInput;
 				if (config.pinCodeOnly && rfidState == waitingRfid)
 				{
 					uid = pinCode;
 					rfidState = cardSwiped;
-				} else
+				}
+				else
 				{
 					rfidState = pinCodeEntered;
 				}
@@ -225,12 +228,12 @@ void pinCodeRead()
 	wg.clear();
 }
 
-int weekdayFromMonday(int weekdayFromSunday) {
+int weekdayFromMonday(int weekdayFromSunday)
+{
 	// we expect weeks starting from Sunday equals to 1
 	// we return week day starting from Monday equals to 0
-	return ( weekdayFromSunday + 5 ) % 7;
+	return (weekdayFromSunday + 5) % 7;
 }
-
 
 /*
  *  If we have successfully read an RFID card, check if access
@@ -239,34 +242,34 @@ int weekdayFromMonday(int weekdayFromSunday) {
 void rfidProcess()
 {
 	if (rfidState == waitingRfid ||
-			(config.pinCodeRequested && rfidState == cardSwiped))
+		(config.pinCodeRequested && rfidState == cardSwiped))
 	{
 		return;
 	}
 
 	/*
 	 *  If the file was not found then this is an unknown user, so no more
-	 *  processing to be done. 
+	 *  processing to be done.
 	 */
 	String filename = "/P/";
 	filename += uid;
 	File f = LittleFS.open(filename, "r");
 	if (!f)
 	{
-			processingState = unknown;
-			return;
+		processingState = unknown;
+		return;
 	}
 
 	/*
 	 *  Read the user's settings
 	 */
-	 /* Each user has a file named after the RFID UID */
-	
+	/* Each user has a file named after the RFID UID */
+
 	size_t size = f.size();
 	std::unique_ptr<char[]> buf(new char[size]);
 	f.readBytes(buf.get(), size);
 	f.close();
-	//DynamicJsonDocument json(512);
+	// DynamicJsonDocument json(512);
 	JsonDocument json;
 	auto error = deserializeJson(json, buf.get(), size);
 
@@ -285,7 +288,7 @@ void rfidProcess()
 
 	// if the pin code is wrong we deny access
 	// pinCode is equal to uid if we allow pin code only access
-	if(config.pinCodeRequested && pinCode != json["pincode"] && pinCode != uid && json["pincode"] != "")
+	if (config.pinCodeRequested && pinCode != json["pincode"] && pinCode != uid && json["pincode"] != "")
 	{
 		processingState = wrongPincode;
 #ifdef DEBUG
@@ -325,14 +328,17 @@ void rfidProcess()
 		if (validUntilL < nowL || validSinceL > nowL)
 		{
 			processingState = expired;
-		} else if (openingHours[weekdayFromMonday(weekday(epoch))][hourTz] != '1')
+		}
+		else if (openingHours[weekdayFromMonday(weekday(epoch))][hourTz] != '1')
 		{
 			processingState = notValid;
-		} else
+		}
+		else
 		{
 			processingState = valid;
 		}
-	} else if (accountType == ACCESS_ADMIN)
+	}
+	else if (accountType == ACCESS_ADMIN)
 	{
 		/*
 		 *  Admin user - enable relay (with no time limits) and wifi
@@ -342,7 +348,9 @@ void rfidProcess()
 #endif
 		doEnableWifi = true;
 		processingState = validAdmin;
-	} else {
+	}
+	else
+	{
 		/*
 		 *  User exists but does not have access
 		 */
@@ -358,9 +366,12 @@ void rfidProcess()
 		for (int currentRelay = 0; currentRelay < config.numRelays; currentRelay++)
 		{
 			// Get user data JSON access type entry for this relay
-			if (currentRelay == 0) {
+			if (currentRelay == 0)
+			{
 				accountTypes[currentRelay] = json["acctype"];
-			} else {
+			}
+			else
+			{
 				accountTypes[currentRelay] = json["acctype" + String(currentRelay + 1)];
 			}
 
@@ -385,9 +396,12 @@ void rfidOutsideMessaging()
 		Serial.println(" has access relay");
 #endif
 		writeLatest(uid, username, accountType, ACCESS_GRANTED);
-		if (config.numRelays == 1) {
+		if (config.numRelays == 1)
+		{
 			mqttPublishAccess(epoch, "true", "Always", username, uid, pinCode);
-		} else {
+		}
+		else
+		{
 			mqttPublishAccess(epoch, "true", accountTypes, username, uid, pinCode);
 		}
 		beeperValidAccess();
@@ -396,9 +410,12 @@ void rfidOutsideMessaging()
 	{
 		ws.textAll("{\"command\":\"giveAccess\"}");
 		writeLatest(uid, username, accountType, ACCESS_GRANTED);
-		if (config.numRelays == 1) {
+		if (config.numRelays == 1)
+		{
 			mqttPublishAccess(epoch, "true", "Admin", username, uid, pinCode);
-		} else {
+		}
+		else
+		{
 			mqttPublishAccess(epoch, "true", accountTypes, username, uid, pinCode);
 		}
 		beeperAdminAccess();
@@ -435,7 +452,7 @@ void rfidOutsideMessaging()
 		String data = String(uid) += " " + String(type);
 		writeEvent("WARN", "rfid", "Unknown rfid tag is scanned", data);
 		writeLatest(uid, "Unknown", 98, ACCESS_DENIED);
-		//DynamicJsonDocument root(512);
+		// DynamicJsonDocument root(512);
 		JsonDocument root;
 		root["command"] = "piccscan";
 		root["uid"] = uid;
@@ -451,10 +468,11 @@ void rfidOutsideMessaging()
 		mqttPublishAccess(epoch, "false", "Denied", "Unknown", uid, " ");
 		ledAccessDeniedOn();
 		beeperAccessDenied();
-	} else if (uid != "" && processingState != waitingProcessing)
+	}
+	else if (uid != "" && processingState != waitingProcessing)
 	{
 		// message to the web UI to tell who has opened the door
-		//DynamicJsonDocument root(512);
+		// DynamicJsonDocument root(512);
 		JsonDocument root;
 		root["command"] = "piccscan";
 		root["uid"] = uid;
@@ -506,14 +524,14 @@ void rfidLoop()
 	cleanRfidLoop();
 }
 
-void ICACHE_FLASH_ATTR setupWiegandReader(int d0, int d1, bool removeParityBits)
+void setupWiegandReader(int d0, int d1, bool removeParityBits)
 {
-	wg.begin(d0, d1, 58, 25); //58bit
+	wg.begin(d0, d1, 58, 25); // 58bit
 	rfidState = waitingRfid;
 }
 
-void ICACHE_FLASH_ATTR setupWiegandReader(int d0, int d1, bool removeParityBits, int wiegandbits)
+void setupWiegandReader(int d0, int d1, bool removeParityBits, int wiegandbits)
 {
-	wg.begin(d0, d1, wiegandbits, 25); 
+	wg.begin(d0, d1, wiegandbits, 25);
 	rfidState = waitingRfid;
 }

@@ -32,14 +32,18 @@ bool eth_connected = false;
 #endif
 
 #include "Arduino.h"
-#include <WiFi.h>
+#include "Wire.h"
 #include <SPI.h>
+#include <IO2.h>
+IO2 io2 = IO2(); // set I2C address of MOD-IO2
+#include <WiFi.h>
+#include <ETH.h>
 #include <ESPmDNS.h>
 #define ARDUINOJSON_DECODE_UNICODE 0
 #include <ArduinoJson.h>
 #include <FS.h>
 #include <LittleFS.h>
-#include "esp_flash.h" 
+#include "esp_flash.h"
 #include <AsyncTCP.h>
 #include <ESPAsyncWebServer.h>
 #include <TimeLib.h>
@@ -48,13 +52,11 @@ bool eth_connected = false;
 #include <Bounce2.h>
 #include <Desfire.h>
 #include <PN532.h>
-//#include <esp_task_wdt.h>
+// #include <esp_task_wdt.h>
 #include <Update.h>
 #include "magicnumbers.h"
 #include "config.h"
-
 Config config;
-
 #include <WiegandNG.h>
 
 File fsUploadFile;
@@ -63,20 +65,20 @@ WiegandNG wg;
 
 // relay specific variables
 #if MAX_NUM_RELAYS == 4
-	bool activateRelay[MAX_NUM_RELAYS] = {false, false, false, false};
-	bool deactivateRelay[MAX_NUM_RELAYS] = {false, false, false, false};
+bool activateRelay[MAX_NUM_RELAYS] = {false, false, false, false};
+bool deactivateRelay[MAX_NUM_RELAYS] = {false, false, false, false};
 #endif
 #if MAX_NUM_RELAYS == 3
-	bool activateRelay[MAX_NUM_RELAYS] = {false, false, false};
-	bool deactivateRelay[MAX_NUM_RELAYS] = {false, false, false};
+bool activateRelay[MAX_NUM_RELAYS] = {false, false, false};
+bool deactivateRelay[MAX_NUM_RELAYS] = {false, false, false};
 #endif
 #if MAX_NUM_RELAYS == 2
-	bool activateRelay[MAX_NUM_RELAYS] = {false, false};
-	bool deactivateRelay[MAX_NUM_RELAYS] = {false, false};
+bool activateRelay[MAX_NUM_RELAYS] = {false, false};
+bool deactivateRelay[MAX_NUM_RELAYS] = {false, false};
 #endif
 #if MAX_NUM_RELAYS == 1
-	bool activateRelay[MAX_NUM_RELAYS] = {false};
-	bool deactivateRelay[MAX_NUM_RELAYS] = {false};
+bool activateRelay[MAX_NUM_RELAYS] = {false};
+bool deactivateRelay[MAX_NUM_RELAYS] = {false};
 #endif
 
 Desfire desfire;
@@ -88,18 +90,18 @@ Desfire desfire;
 // To restore the master key to the factory default DES key use the command "RESTORE" in the terminal.
 // If you set the compiler switch USE_AES = true, only the first 16 bytes of this key will be used.
 // IMPORTANT: Before changing this key, please execute the RESTORE command on all personalized cards!
-// IMPORTANT: When you compile for DES, the least significant bit (bit 0) of all bytes in this key 
+// IMPORTANT: When you compile for DES, the least significant bit (bit 0) of all bytes in this key
 //            will be modified, because it stores the key version.
-const byte SECRET_PICC_MASTER_KEY[24] = { 0xAA, 0x08, 0x57, 0x92, 0x1C, 0x76, 0xFF, 0x65, 0xE7, 0xD2, 0x78, 0x44, 0xF8, 0x0F, 0x8D, 0x1B, 0xE7, 0xC2, 0xF0, 0x89, 0x04, 0xC0, 0xC3, 0xE3 };
+const byte SECRET_PICC_MASTER_KEY[24] = {0xAA, 0x08, 0x57, 0x92, 0x1C, 0x76, 0xFF, 0x65, 0xE7, 0xD2, 0x78, 0x44, 0xF8, 0x0F, 0x8D, 0x1B, 0xE7, 0xC2, 0xF0, 0x89, 0x04, 0xC0, 0xC3, 0xE3};
 
 // This 3K3DES key is used to derive a 16 byte application master key from the UID of the card and the user name.
 // The purpose is that each card will have it's unique application master key that can be calculated from known values.
-const byte SECRET_APPLICATION_KEY[24] = { 0x81, 0xDF, 0x6A, 0xD9, 0x89, 0xE9, 0xA2, 0xD1, 0xC5, 0xB3, 0xE3, 0x9D, 0xE9, 0x60, 0x43, 0xE3, 0x5B, 0x60, 0x85, 0x8B, 0x99, 0xD8, 0xD3, 0x5B };
+const byte SECRET_APPLICATION_KEY[24] = {0x81, 0xDF, 0x6A, 0xD9, 0x89, 0xE9, 0xA2, 0xD1, 0xC5, 0xB3, 0xE3, 0x9D, 0xE9, 0x60, 0x43, 0xE3, 0x5B, 0x60, 0x85, 0x8B, 0x99, 0xD8, 0xD3, 0x5B};
 
 // This 3K3DES key is used to derive the 16 byte store value from the UID of the card and the user name.
 // This value is stored in a standard data file on the card.
 // The purpose is that each card will have it's unique store value that can be calculated from known values.
-const byte SECRET_STORE_VALUE_KEY[24] = { 0x1E, 0x5D, 0x78, 0x57, 0x68, 0xFC, 0xEE, 0xC9, 0x40, 0xEC, 0x30, 0xDE, 0xEC, 0xA9, 0x8B, 0x3C, 0x7F, 0x8A, 0xC9, 0xC3, 0xAA, 0xD7, 0x4F, 0x17 };
+const byte SECRET_STORE_VALUE_KEY[24] = {0x1E, 0x5D, 0x78, 0x57, 0x68, 0xFC, 0xEE, 0xC9, 0x40, 0xEC, 0x30, 0xDE, 0xEC, 0xA9, 0x8B, 0x3C, 0x7F, 0x8A, 0xC9, 0xC3, 0xAA, 0xD7, 0x4F, 0x17};
 
 // -----------------------------------------------------------------------------------------------------------
 
@@ -112,7 +114,7 @@ const uint32_t CARD_APPLICATION_ID = 0xAA401F;
 const byte CARD_FILE_ID = 0;
 
 // This 8 bit version number is uploaded to the card together with the key itself.
-// This version is irrelevant for encryption. 
+// This version is irrelevant for encryption.
 // It is just a version number for the key that you can obtain with Desfire::GetKeyVersion().
 // The key version can always be obtained without authentication.
 // You can theoretically have multiple master keys and by obtaining the version you know which one to use for authentication.
@@ -170,7 +172,6 @@ unsigned long uptimeSeconds = 0;
 unsigned long wifiPinBlink = millis();
 unsigned long wiFiUptimeMillis = 0;
 
-
 #include "led.esp"
 #include "beeper.esp"
 #include "log.esp"
@@ -188,15 +189,15 @@ unsigned long wiFiUptimeMillis = 0;
 #include "door.esp"
 #include "doorbell.esp"
 
-char* numberToHexStr(char* out, unsigned char* in, size_t length)
+char *numberToHexStr(char *out, unsigned char *in, size_t length)
 {
-        char* ptr = out;
-        for (int i = length-1; i >= 0 ; i--)
-            ptr += sprintf(ptr, "%02X", in[i]);
-        return ptr;
+	char *ptr = out;
+	for (int i = length - 1; i >= 0; i--)
+		ptr += sprintf(ptr, "%02X", in[i]);
+	return ptr;
 }
 
-void ICACHE_FLASH_ATTR setup()
+void setup()
 {
 #ifdef DEBUG
 	Serial.begin(115200);
@@ -213,10 +214,10 @@ void ICACHE_FLASH_ATTR setup()
 	Serial.println("");
 
 	uint32_t realSize;
-    esp_flash_get_size(NULL, &realSize);
+	esp_flash_get_size(NULL, &realSize);
 	uint32_t ideSize = ESP.getFlashChipSize();
 	FlashMode_t ideMode = ESP.getFlashChipMode();
-	
+
 	Serial.print("ESP32 Model:      ");
 	Serial.print(ESP.getChipModel());
 	Serial.print(" rev");
@@ -224,11 +225,11 @@ void ICACHE_FLASH_ATTR setup()
 	Serial.print("ESP32 Cores:       ");
 	Serial.println(ESP.getChipCores());
 	uint32_t chipID = 0;
-	for (int i = 0; i < 17; i = i + 8) {
-    	chipID |= ((ESP.getEfuseMac() >> (40 - i)) & 0xff) << i;
-  	}
+	for (int i = 0; i < 17; i = i + 8)
+	{
+		chipID |= ((ESP.getEfuseMac() >> (40 - i)) & 0xff) << i;
+	}
 	Serial.printf("ESP32 Chip ID:   %d\n", chipID);
-
 	Serial.printf("Flash real size: %u\n\n", realSize);
 	Serial.printf("Flash ide  size: %u\n", ideSize);
 	Serial.printf("Flash ide speed: %u\n", ESP.getFlashChipSpeed());
@@ -250,19 +251,47 @@ void ICACHE_FLASH_ATTR setup()
 #ifdef DEBUG
 		Serial.println(F("[ ERROR ] Filesystem ERROR!"));
 #endif
-	} else
+	}
+	else
 	{
 #ifdef DEBUG
-			Serial.println(F("[ INFO ] Filesystem OK"));
+		Serial.println(F("[ INFO ] Filesystem OK"));
 #endif
 	}
 
 	File root = LittleFS.open("/P");
-	if(!root.isDirectory())
+	if (!root.isDirectory())
 	{
-        LittleFS.mkdir("/P");
-    }
-	
+		LittleFS.mkdir("/P");
+	}
+	// MOD-IO2 setup
+	io2.readID();
+	if (io2.getError() != IO2_SUCCESS)
+	{
+#ifdef DEBUG
+		Serial.println(F("[ INFO ] MOD-IO2 is not responding at default I2C address"));
+		Serial.print(F("[ INFO ] Searching."));
+#endif
+		io2.detect();
+#ifdef DEBUG
+		if (io2.getError() == IO2_NOT_FOUND)
+		{
+			Serial.println("[ ERROR ] MOD-IO2 not found");
+		}
+		Serial.print(F("[ INFO ] located at 0x"));
+		Serial.println(io2.getAddress(), HEX);
+#endif
+	}
+#ifdef DEBUG
+	Serial.println(F("[ INFO ] Testing MOD-IO2 relays now!"));
+	io2.setRelay(RELAY1, ON);
+	delay(700);
+	io2.setRelay(RELAY1, OFF);
+	delay(700);
+	io2.setRelay(RELAY2, ON);
+	delay(700);
+	io2.setRelay(RELAY2, OFF);
+#endif
 	bool configured = false;
 	configured = loadConfiguration(config);
 #ifdef ETHERNET
@@ -276,18 +305,17 @@ void ICACHE_FLASH_ATTR setup()
 	config.subnetIpEth = ETH.subnetMask();
 	config.dnsIpEth = ETH.dnsIP();
 	config.ethmac = ETH.macAddress();
-	
-    String linkduplex = "HD";
-	if (ETH.fullDuplex() == true) 
+
+	String linkduplex = "HD";
+	if (ETH.fullDuplex() == true)
 	{
 		linkduplex = "FD";
 	}
-	char spd[12]; 
+	char spd[12];
 	sprintf(spd, "%dMbps %s", ETH.linkSpeed(), linkduplex);
 	config.ethlink = (String)spd;
 #endif
 	setupWifi(configured);
-
 	setupMqtt();
 	setupWebServer();
 	writeEvent("INFO", "sys", "System setup completed, running", "");
@@ -302,16 +330,15 @@ void ICACHE_FLASH_ATTR setup()
 	desfire.setCardKeyVersion(CARD_KEY_VERSION);
 }
 
-void ICACHE_RAM_ATTR loop()
+void IRAM_ATTR loop()
 {
 	currentMillis = millis();
 	deltaTime = currentMillis - previousLoopMillis;
 	uptimeSeconds = currentMillis / 1000;
 	previousLoopMillis = currentMillis;
-	
+
 	trySyncNTPtime(10);
-	
-	
+
 	if (config.openlockpin != 255)
 	{
 		openLockButton.update();
@@ -336,13 +363,15 @@ void ICACHE_RAM_ATTR loop()
 		rfidLoop();
 	}
 
+	// relay
+
 	for (int currentRelay = 0; currentRelay < config.numRelays; currentRelay++)
 	{
 		if (config.lockType[currentRelay] == LOCKTYPE_CONTINUOUS) // Continuous relay mode
 		{
 			if (activateRelay[currentRelay])
 			{
-				if (digitalRead(config.relayPin[currentRelay]) == !config.relayType[currentRelay]) // currently OFF, need to switch ON
+				if (io2.digitalRead(config.relayPin[currentRelay]) == !config.relayType[currentRelay]) // currently OFF, need to switch ON
 				{
 					mqttPublishIo("lock" + String(currentRelay), "UNLOCKED");
 #ifdef DEBUG
@@ -350,7 +379,7 @@ void ICACHE_RAM_ATTR loop()
 					Serial.println(millis());
 					Serial.printf("activating relay %d now\n", currentRelay);
 #endif
-					digitalWrite(config.relayPin[currentRelay], config.relayType[currentRelay]);
+					io2.setRelay(config.relayPin[currentRelay] + 1, config.relayType[currentRelay]);
 				}
 				else // currently ON, need to switch OFF
 				{
@@ -360,11 +389,12 @@ void ICACHE_RAM_ATTR loop()
 					Serial.println(millis());
 					Serial.printf("deactivating relay %d now\n", currentRelay);
 #endif
-					digitalWrite(config.relayPin[currentRelay], !config.relayType[currentRelay]);
+					io2.setRelay(config.relayPin[currentRelay] + 1, !config.relayType[currentRelay]);
 				}
 				activateRelay[currentRelay] = false;
 			}
 		}
+
 		else if (config.lockType[currentRelay] == LOCKTYPE_MOMENTARY) // Momentary relay mode
 		{
 			if (activateRelay[currentRelay])
@@ -375,7 +405,7 @@ void ICACHE_RAM_ATTR loop()
 				Serial.println(millis());
 				Serial.printf("activating relay %d now\n", currentRelay);
 #endif
-				digitalWrite(config.relayPin[currentRelay], config.relayType[currentRelay]);
+				io2.setRelay(config.relayPin[currentRelay] + 1, config.relayType[currentRelay]);
 				previousMillis = millis();
 				activateRelay[currentRelay] = false;
 				deactivateRelay[currentRelay] = true;
@@ -395,7 +425,7 @@ void ICACHE_RAM_ATTR loop()
 				Serial.print("mili : ");
 				Serial.println(millis());
 #endif
-				digitalWrite(config.relayPin[currentRelay], !config.relayType[currentRelay]);
+				io2.setRelay(config.relayPin[currentRelay] + 1, !config.relayType[currentRelay]);
 				deactivateRelay[currentRelay] = false;
 			}
 		}
@@ -442,7 +472,6 @@ void ICACHE_RAM_ATTR loop()
 		Serial.println(F("[ INFO ] WiFi is going to be disabled..."));
 #endif
 		disableWifi();
-
 	}
 
 	// don't try connecting to WiFi when waiting for pincode
@@ -454,7 +483,7 @@ void ICACHE_RAM_ATTR loop()
 			writeEvent("INFO", "wifi", "Enabling WiFi", "");
 			doEnableWifi = false;
 #ifdef DEBUG
-		Serial.println(F("[ INFO ] Enabling WiFi..."));
+			Serial.println(F("[ INFO ] Enabling WiFi..."));
 #endif
 		}
 	}

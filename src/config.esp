@@ -1,26 +1,12 @@
-bool ICACHE_FLASH_ATTR loadConfiguration(Config &config)
+bool loadConfiguration(Config &config)
 {
-  File configFile = LittleFS.open("/config.json", "r");
-  if (!configFile)
-  {
+	File configFile = LittleFS.open("/config.json", "r");
+	if (!configFile)
+	{
 #ifdef DEBUG
-    Serial.println(F("[ WARN ] Failed to open config file"));
+		Serial.println(F("[ WARN ] Failed to open config file!"));
 #endif
-    // Create config.json file if it does not exist
-    configFile = LittleFS.open("/config.json", "w");
-    if (!configFile)
-    {
-#ifdef DEBUG
-      Serial.println(F("[ ERROR ] Failed to create config file"));
-#endif
-      return false;
-    }
-    // Write default configuration data to config.json file
-    configFile.println("{\"command\":\"configfile\",\"network\":{\"bssid\":\"\",\"ssid\":\"esp32-actl\",\"wmode\":1,\"hide\":0,\"pswd\":\"\",\"offtime\":0,\"dhcp\":1,\"ip\":\"\",\"subnet\":\"\",\"gateway\":\"\",\"dns\":\"\",\"apip\":\"192.168.4.1\",\"apsubnet\":\"255.255.255.0\",\"fallbackmode\":0,\"dhcpeth\":1,\"ipeth\":\"\",\"subneteth\":\"\",\"gatewayeth\":\"\",\"dnseth\":\"\"},\"hardware\":{\"readertype\":1,\"wgd0pin\":4,\"wgd1pin\":5,\"wifipin\":255,\"rtype\":1,\"ltype\":0,\"rpin\":4,\"rtime\":400,\"doorname\":\"Door\",\"beeperpin\":255,\"ledwaitingpin\":255,\"openlockpin\":255,\"doorbellpin\":255,\"accessdeniedpin\":255,\"useridstoragemode\":\"hexadecimal\",\"requirepincodeafterrfid\":1,\"allowpincodeonly\":0,\"removeparitybits\":1,\"doorstatpin\":255,\"maxOpenDoorTime\":0},\"general\":{\"hostnm\":\"esp32-actl\",\"restart\":0,\"pswd\":\"admin\",\"openinghours\":[\"111111111111111111111111\",\"111111111111111111111111\",\"111111111111111111111111\",\"111111111111111111111111\",\"111111111111111111111111\",\"111111111111111111111111\",\"111111111111111111111111\"],\"openinghours2\":[\"111111111111111111111111\",\"111111111111111111111111\",\"111111111111111111111111\",\"111111111111111111111111\",\"111111111111111111111111\",\"111111111111111111111111\",\"111111111111111111111111\"]},\"mqtt\":{\"enabled\":0,\"host\":\"\",\"port\":1883,\"topic\":\"\",\"autotopic\":0,\"user\":\"\",\"pswd\":\"\",\"syncrate\":180,\"mqttlog\":0},\"ntp\":{\"server\":\"pool.ntp.org\",\"interval\":30,\"tzinfo\":\"\"}}");
-    configFile.close();
-	Serial.println(F("[ WARN ] Created Config!"));
-    // Return false to indicate that the config file was created
-    return false;
+		return false;
 	}
 	size_t size = configFile.size();
 	std::unique_ptr<char[]> buf(new char[size]);
@@ -29,7 +15,6 @@ bool ICACHE_FLASH_ATTR loadConfiguration(Config &config)
 	Serial.print(F("[ INFO ] config file: "));
 	Serial.println(configFile);
 #endif
-	//DynamicJsonDocument json(2048);
 	JsonDocument json;
 	auto error = deserializeJson(json, buf.get(), size);
 	if (error)
@@ -60,7 +45,6 @@ bool ICACHE_FLASH_ATTR loadConfiguration(Config &config)
 		}
 	}
 
-
 	if (hardware["doorstatpin"].is<int>())
 	{
 		config.doorstatpin = hardware["doorstatpin"].as<int>();
@@ -69,7 +53,6 @@ bool ICACHE_FLASH_ATTR loadConfiguration(Config &config)
 			pinMode(config.doorstatpin, INPUT);
 		}
 	}
-
 
 	if (hardware["maxOpenDoorTime"].is<int>())
 	{
@@ -85,14 +68,13 @@ bool ICACHE_FLASH_ATTR loadConfiguration(Config &config)
 		}
 	}
 
-
 	if (hardware["accessdeniedpin"].is<int>())
 	{
 		config.accessdeniedpin = hardware["accessdeniedpin"].as<int>();
 #ifdef ETHDEBUG
-    if (config.accessdeniedpin != 255 && config.doorstatpin != 3 && config.doorstatpin != 1)
+		if (config.accessdeniedpin != 255 && config.doorstatpin != 3 && config.doorstatpin != 1)
 #else
-    if (config.accessdeniedpin != 255)
+		if (config.accessdeniedpin != 255)
 #endif
 		{
 			pinMode(config.accessdeniedpin, OUTPUT);
@@ -104,9 +86,9 @@ bool ICACHE_FLASH_ATTR loadConfiguration(Config &config)
 	{
 		config.beeperpin = hardware["beeperpin"].as<int>();
 #ifdef ETHDEBUG
-    if (config.beeperpin != 255 && config.beeperpin != 3 && config.beeperpin != 1)
+		if (config.beeperpin != 255 && config.beeperpin != 3 && config.beeperpin != 1)
 #else
-    if (config.beeperpin != 255)
+		if (config.beeperpin != 255)
 #endif
 		{
 			pinMode(config.beeperpin, OUTPUT);
@@ -118,9 +100,9 @@ bool ICACHE_FLASH_ATTR loadConfiguration(Config &config)
 	{
 		config.ledwaitingpin = hardware["ledwaitingpin"].as<int>();
 #ifdef ETHDEBUG
-    if (config.ledwaitingpin != 255 && config.ledwaitingpin != 3 && config.ledwaitingpin != 1)
+		if (config.ledwaitingpin != 255 && config.ledwaitingpin != 3 && config.ledwaitingpin != 1)
 #else
-    if (config.ledwaitingpin != 255)
+		if (config.ledwaitingpin != 255)
 #endif
 		{
 			pinMode(config.ledwaitingpin, OUTPUT);
@@ -131,14 +113,13 @@ bool ICACHE_FLASH_ATTR loadConfiguration(Config &config)
 	if (hardware["openlockpin"].is<int>())
 	{
 		config.openlockpin = hardware["openlockpin"].as<int>();
-		
+
 		if (config.openlockpin != 255)
 		{
 			openLockButton = Bounce();
 			openLockButton.attach(config.openlockpin, INPUT_PULLUP);
 			openLockButton.interval(30);
 		}
-		
 	}
 
 	if (hardware["numrelays"].is<int>())
@@ -327,27 +308,31 @@ bool ICACHE_FLASH_ATTR loadConfiguration(Config &config)
 	config.dhcpEnabledEth = network["dhcpeth"] == 1;
 
 	// Check if the IP address is set
-	if (network["ipeth"].is<String>()) {
+	if (network["ipeth"].is<String>())
+	{
 		// Convert the IP address string to an IP address
-		config.ipAddressEth.fromString(network["ipeth"].as<const char*>());
+		config.ipAddressEth.fromString(network["ipeth"].as<const char *>());
 	}
 
 	// Check if the subnet mask is set
-	if (network["subneteth"].is<String>()) {
+	if (network["subneteth"].is<String>())
+	{
 		// Convert the subnet mask string to an IP address
-		config.subnetIpEth.fromString(network["subneteth"].as<const char*>());
+		config.subnetIpEth.fromString(network["subneteth"].as<const char *>());
 	}
 
 	// Check if the gateway IP address is set
-	if (network["gatewayeth"].is<String>()) {
+	if (network["gatewayeth"].is<String>())
+	{
 		// Convert the gateway IP address string to an IP address
-		config.gatewayIpEth.fromString(network["gatewayeth"].as<const char*>());
+		config.gatewayIpEth.fromString(network["gatewayeth"].as<const char *>());
 	}
 
 	// Check if the DNS IP address is set
-	if (network["dnseth"].is<String>()) {
+	if (network["dnseth"].is<String>())
+	{
 		// Convert the DNS IP address string to an IP address
-		config.dnsIpEth.fromString(network["dnseth"].as<const char*>());
+		config.dnsIpEth.fromString(network["dnseth"].as<const char *>());
 	}
 #endif
 

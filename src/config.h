@@ -1,15 +1,16 @@
-struct Config {
+struct Config
+{
 
-    #define MAX_NUM_RELAYS 4
+#define MAX_NUM_RELAYS 4
 
-    #ifdef ETHERNET
-        IPAddress ipAddressEth = (192,168,5,1);
-        IPAddress gatewayIpEth = (0,0,0,0);
-        IPAddress subnetIpEth = (255,255,255,0);
-        IPAddress dnsIpEth = (0,0,0,0);
-        String ethlink = "not connected";
-        String ethmac = "";
-    #endif
+#ifdef ETHERNET
+    IPAddress ipAddressEth = (192, 168, 5, 1);
+    IPAddress gatewayIpEth = (0, 0, 0, 0);
+    IPAddress subnetIpEth = (255, 255, 255, 0);
+    IPAddress dnsIpEth = (0, 0, 0, 0);
+    String ethlink = "not connected";
+    String ethmac = "";
+#endif
 
     int relayPin[MAX_NUM_RELAYS];
     uint8_t accessdeniedpin = 255;
@@ -29,8 +30,8 @@ struct Config {
     unsigned long beeperOffTime = 0;
     byte bssid[6] = {0, 0, 0, 0, 0, 0};
     char *deviceHostname = NULL;
-    bool dhcpEnabled = true;
-    bool dhcpEnabledEth = true;
+    bool dhcpEnabled = false;
+    bool dhcpEnabledEth = false;
     IPAddress dnsIp;
     uint8_t doorbellpin = 255;
     char *doorName[MAX_NUM_RELAYS];
@@ -42,8 +43,8 @@ struct Config {
     uint8_t maxOpenDoorTime = 0;
     bool mqttAutoTopic = false;
     bool mqttEnabled = false;
-    bool mqttEvents = false;	  // Sends events over MQTT disables LittleFS file logging
-    bool mqttHA = false; // Sends events over simple MQTT topics and AutoDiscovery
+    bool mqttEvents = false; // Sends events over MQTT disables LittleFS file logging
+    bool mqttHA = false;     // Sends events over simple MQTT topics and AutoDiscovery
     char *mqttHost = NULL;
     unsigned long mqttInterval = 180; // Add to GUI & json config
     char *mqttPass = NULL;
@@ -52,7 +53,7 @@ struct Config {
     char *mqttUser = NULL;
     bool networkHidden = false;
     char *ntpServer = NULL;
-	int ntpInterval = 0;
+    int ntpInterval = 0;
     int numRelays = 1;
     char *openingHours[7];
     char *openingHours2[7];
