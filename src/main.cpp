@@ -33,9 +33,11 @@ bool eth_connected = false;
 
 #include "Arduino.h"
 #include "Wire.h"
-#include <IO2.h>
-#include <WiFi.h>
 #include <SPI.h>
+#include <IO2.h>
+IO2 io2 = IO2(); // set I2C address of MOD-IO2
+#include <WiFi.h>
+#include <ETH.h>
 #include <ESPmDNS.h>
 #define ARDUINOJSON_DECODE_UNICODE 0
 #include <ArduinoJson.h>
@@ -54,9 +56,7 @@ bool eth_connected = false;
 #include <Update.h>
 #include "magicnumbers.h"
 #include "config.h"
-
 Config config;
-
 #include <WiegandNG.h>
 
 File fsUploadFile;
@@ -197,7 +197,7 @@ char *numberToHexStr(char *out, unsigned char *in, size_t length)
 	return ptr;
 }
 
-void ICACHE_FLASH_ATTR setup()
+void setup()
 {
 #ifdef DEBUG
 	Serial.begin(115200);
@@ -264,7 +264,34 @@ void ICACHE_FLASH_ATTR setup()
 	{
 		LittleFS.mkdir("/P");
 	}
-
+	// MOD-IO2 setup
+	io2.readID();
+	if (io2.getError() != IO2_SUCCESS)
+	{
+#ifdef DEBUG
+		Serial.println(F("[ INFO ] MOD-IO2 is not responding at default I2C address"));
+		Serial.print(F("[ INFO ] Searching."));
+#endif
+		io2.detect();
+#ifdef DEBUG
+		if (io2.getError() == IO2_NOT_FOUND)
+		{
+			Serial.println("[ ERROR ] MOD-IO2 not found");
+		}
+		Serial.print(F("[ INFO ] located at 0x"));
+		Serial.println(io2.getAddress(), HEX);
+#endif
+	}
+#ifdef DEBUG
+	Serial.println(F("[ INFO ] Testing MOD-IO2 relays now!"));
+	io2.setRelay(RELAY1, ON);
+	delay(700);
+	io2.setRelay(RELAY1, OFF);
+	delay(700);
+	io2.setRelay(RELAY2, ON);
+	delay(700);
+	io2.setRelay(RELAY2, OFF);
+#endif
 	bool configured = false;
 	configured = loadConfiguration(config);
 #ifdef ETHERNET
@@ -289,7 +316,6 @@ void ICACHE_FLASH_ATTR setup()
 	config.ethlink = (String)spd;
 #endif
 	setupWifi(configured);
-
 	setupMqtt();
 	setupWebServer();
 	writeEvent("INFO", "sys", "System setup completed, running", "");
@@ -304,7 +330,7 @@ void ICACHE_FLASH_ATTR setup()
 	desfire.setCardKeyVersion(CARD_KEY_VERSION);
 }
 
-void ICACHE_RAM_ATTR loop()
+void IRAM_ATTR loop()
 {
 	currentMillis = millis();
 	deltaTime = currentMillis - previousLoopMillis;
@@ -337,13 +363,15 @@ void ICACHE_RAM_ATTR loop()
 		rfidLoop();
 	}
 
+	// relay
+
 	for (int currentRelay = 0; currentRelay < config.numRelays; currentRelay++)
 	{
 		if (config.lockType[currentRelay] == LOCKTYPE_CONTINUOUS) // Continuous relay mode
 		{
 			if (activateRelay[currentRelay])
 			{
-				if (digitalRead(config.relayPin[currentRelay]) == !config.relayType[currentRelay]) // currently OFF, need to switch ON
+				if (io2.digitalRead(config.relayPin[currentRelay]) == !config.relayType[currentRelay]) // currently OFF, need to switch ON
 				{
 					mqttPublishIo("lock" + String(currentRelay), "UNLOCKED");
 #ifdef DEBUG
@@ -351,7 +379,7 @@ void ICACHE_RAM_ATTR loop()
 					Serial.println(millis());
 					Serial.printf("activating relay %d now\n", currentRelay);
 #endif
-					digitalWrite(config.relayPin[currentRelay], config.relayType[currentRelay]);
+					io2.setRelay(config.relayPin[currentRelay] + 1, config.relayType[currentRelay]);
 				}
 				else // currently ON, need to switch OFF
 				{
@@ -361,7 +389,7 @@ void ICACHE_RAM_ATTR loop()
 					Serial.println(millis());
 					Serial.printf("deactivating relay %d now\n", currentRelay);
 #endif
-					digitalWrite(config.relayPin[currentRelay], !config.relayType[currentRelay]);
+					io2.setRelay(config.relayPin[currentRelay] + 1, !config.relayType[currentRelay]);
 				}
 				activateRelay[currentRelay] = false;
 			}
@@ -377,7 +405,7 @@ void ICACHE_RAM_ATTR loop()
 				Serial.println(millis());
 				Serial.printf("activating relay %d now\n", currentRelay);
 #endif
-				digitalWrite(config.relayPin[currentRelay], config.relayType[currentRelay]);
+				io2.setRelay(config.relayPin[currentRelay] + 1, config.relayType[currentRelay]);
 				previousMillis = millis();
 				activateRelay[currentRelay] = false;
 				deactivateRelay[currentRelay] = true;
@@ -397,7 +425,7 @@ void ICACHE_RAM_ATTR loop()
 				Serial.print("mili : ");
 				Serial.println(millis());
 #endif
-				digitalWrite(config.relayPin[currentRelay], !config.relayType[currentRelay]);
+				io2.setRelay(config.relayPin[currentRelay] + 1, !config.relayType[currentRelay]);
 				deactivateRelay[currentRelay] = false;
 			}
 		}

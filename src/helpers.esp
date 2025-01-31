@@ -1,10 +1,9 @@
-String ICACHE_FLASH_ATTR printIP(IPAddress adress)
+String printIP(IPAddress adress)
 {
 	return adress.toString();
 }
 
-
-void ICACHE_FLASH_ATTR parseBytes(const char *str, char sep, byte *bytes, int maxBytes, int base)
+void parseBytes(const char *str, char sep, byte *bytes, int maxBytes, int base)
 {
 	for (int i = 0; i < maxBytes; i++)
 	{
@@ -26,7 +25,7 @@ void trySyncNTPtime(unsigned long retrySeconds)
 		epoch = lastNTPepoch + (millis() - lastNTPSync) / 1000;
 		return;
 	}
-	
+
 	time_t previousEpoch = epoch;
 	time(&epoch);
 	lastNTPSync = millis();
@@ -41,6 +40,6 @@ void trySyncNTPtime(unsigned long retrySeconds)
 		epoch = previousEpoch; // fallback to previous value, so that you can use the manually set time
 		return;
 	}
-	
+
 	lastNTPepoch = epoch;
 }
