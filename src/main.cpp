@@ -33,10 +33,11 @@ bool eth_connected = false;
 
 #include "Arduino.h"
 #include "Wire.h"
+#include <SPI.h>
 #include <IO2.h>
 IO2 io2 = IO2(); // set I2C address of MOD-IO2
 #include <WiFi.h>
-#include <SPI.h>
+#include <ETH.h>
 #include <ESPmDNS.h>
 #define ARDUINOJSON_DECODE_UNICODE 0
 #include <ArduinoJson.h>
