@@ -1,11 +1,6 @@
 uint8_t mac[6] = {0xbc, 0x34, 0x00, 0x00, 0x00, 0x01};
 //// eth event callback
 
-void setEnableEth()
-{
-	doEnableEth = true;
-}
-
 void onEthConnect(WiFiEvent_t event, WiFiEventInfo_t inf0)
 {
 #ifdef DEBUG
@@ -62,20 +57,19 @@ void setupEth(bool configured)
 #ifdef DEBUG
 	Serial.println("[ INFO ] Ethernet Setup ");
 #endif
-	delay(1000);
-	ETH.begin(ETH_PHY_ADDR, ETH_PHY_POWER, ETH_PHY_MDC, ETH_PHY_MDIO, ETH_PHY_TYPE, ETH_CLK_MODE);
 	if (!configured)
 	{
+		ETH.begin(ETH_PHY_ADDR, ETH_PHY_POWER, ETH_PHY_MDC, ETH_PHY_MDIO, ETH_PHY_TYPE, ETH_CLK_MODE);
 		ETH.setHostname("ESP32-ACTL");
 	}
 	else
 	{
+		ETH.begin(ETH_PHY_ADDR, ETH_PHY_POWER, ETH_PHY_MDC, ETH_PHY_MDIO, ETH_PHY_TYPE, ETH_CLK_MODE);
 		ETH.setHostname(config.deviceHostname);
 
 		if (!config.dhcpEnabledEth)
 		{
-			ETH.config(config.ipAddressEth, config.gatewayIpEth, config.subnetIpEth, config.dnsIpEth);
-			Serial.println("[ INFO ] Using config ");
+			ETH.config(config.ipAddressEth, config.gatewayIpEth, config.subnetIpEth, config.dnsIpEth, config.dnsIpEth);
 		}
 	}
 	WiFi.onEvent(onEthConnect, WiFiEvent_t::ARDUINO_EVENT_ETH_CONNECTED);
