@@ -1,84 +1,65 @@
-uint8_t mac[6] = {0xbc, 0x34, 0x00, 0x00, 0x00, 0x01};
-//// eth event callback
-
-void setEnableEth()
+// React to Ethernet events:
+void WiFiEvent(WiFiEvent_t event)
 {
-	doEnableEth = true;
-}
-
-void onEthConnect(WiFiEvent_t event, WiFiEventInfo_t inf0)
-{
-#ifdef DEBUG
-	Serial.println(F("[ INFO ] Ethernet Connected"));
-#endif
-	mqttReconnectTimer.detach();
-}
-
-void onEthDisconnect(WiFiEvent_t event, WiFiEventInfo_t inf0)
-{
-	if (!ETH.linkUp())
+	switch (event)
 	{
-		return;
-	}
-#ifdef DEBUG
-	Serial.println(F("[ INFO ] ETH Disconnected"));
-#endif
-	eth_connected = false;
-	config.ethlink = "not connected";
-	mqttReconnectTimer.detach();
-	disconnectMqtt();
-}
 
-void onEthGotIP(WiFiEvent_t event, WiFiEventInfo_t info)
-{
-	delay(100);
-	config.ipAddressEth = ETH.localIP();
-	config.gatewayIpEth = ETH.gatewayIP();
-	config.subnetIpEth = ETH.subnetMask();
-	config.dnsIpEth = ETH.dnsIP();
-	config.ethmac = ETH.macAddress();
-	String linkduplex = "HD";
-	if (ETH.fullDuplex() == true)
-	{
-		linkduplex = "FD";
+	case ARDUINO_EVENT_ETH_START:
+		// This will happen during setup, when the Ethernet service starts
+		Serial.println("[ INFO ] ETH Started");
+		// set eth hostname here
+		ETH.setHostname(config.deviceHostname);
+		break;
+
+	case ARDUINO_EVENT_ETH_CONNECTED:
+		// This will happen when the Ethernet cable is plugged
+		Serial.println("[ INFO ] ETH Connected");
+		break;
+
+	case ARDUINO_EVENT_ETH_GOT_IP:
+		// This will happen when we obtain an IP address through DHCP or start a static IP connection:
+		Serial.print("[ INFO ] ETH MAC: ");
+		Serial.print(ETH.macAddress());
+		Serial.print(", IPv4: ");
+		Serial.print(ETH.localIP());
+		if (ETH.fullDuplex())
+		{
+			Serial.print(", FULL_DUPLEX");
+		}
+		Serial.print(", ");
+		Serial.print(ETH.linkSpeed());
+		Serial.println("Mbps");
+		eth_connected = true;
+		break;
+
+	case ARDUINO_EVENT_ETH_DISCONNECTED:
+		// This will happen when the Ethernet cable is unplugged
+		Serial.println("[ INFO ] ETH Disconnected");
+		eth_connected = false;
+		break;
+
+	case ARDUINO_EVENT_ETH_STOP:
+		// This will happen when the ETH interface is stopped but this never happens
+		Serial.println("[ WARN ] ETH Stopped");
+		eth_connected = false;
+		break;
+
+	default:
+		break;
 	}
-	char spd[12];
-	sprintf(spd, "%dMbps %s", ETH.linkSpeed(), linkduplex);
-	config.ethlink = (String)spd;
-	eth_connected = true;
-#ifdef DEBUG
-	Serial.print("[ INFO ] Ethernet IP: ");
-	Serial.println(ETH.localIP().toString());
-	Serial.print("[ INFO ] Ethernet MAC: ");
-	Serial.println(config.ethmac);
-	Serial.print("[ INFO ] Ethernet Link: ");
-	Serial.println((String)spd);
-#endif
-	connectToMqtt();
 }
 
 void setupEth(bool configured)
 {
+	// Add a handler for network events. This is misnamed "WiFi" because the ESP32 is historically WiFi only,
+	// but in our case, this will react to Ethernet events.
+	WiFi.onEvent(WiFiEvent);
 #ifdef DEBUG
-	Serial.println("[ INFO ] Ethernet Setup ");
+	Serial.println("[ INFO ] ETH Setup ");
 #endif
-	delay(1000);
 	ETH.begin(ETH_PHY_ADDR, ETH_PHY_POWER, ETH_PHY_MDC, ETH_PHY_MDIO, ETH_PHY_TYPE, ETH_CLK_MODE);
-	if (!configured)
+	if (!config.dhcpEnabledEth)
 	{
-		ETH.setHostname("ESP32-ACTL");
+		ETH.config(config.ipAddressEth, config.gatewayIpEth, config.subnetIpEth, config.dnsIpEth, config.dnsIpEth);
 	}
-	else
-	{
-		ETH.setHostname(config.deviceHostname);
-
-		if (!config.dhcpEnabledEth)
-		{
-			ETH.config(config.ipAddressEth, config.gatewayIpEth, config.subnetIpEth, config.dnsIpEth);
-			Serial.println("[ INFO ] Using config ");
-		}
-	}
-	WiFi.onEvent(onEthConnect, WiFiEvent_t::ARDUINO_EVENT_ETH_CONNECTED);
-	WiFi.onEvent(onEthDisconnect, WiFiEvent_t::ARDUINO_EVENT_ETH_DISCONNECTED);
-	WiFi.onEvent(onEthGotIP, WiFiEvent_t::ARDUINO_EVENT_ETH_GOT_IP);
 }

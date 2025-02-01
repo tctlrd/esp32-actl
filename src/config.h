@@ -1,17 +1,14 @@
-struct Config
-{
-
 #define MAX_NUM_RELAYS 4
 
-#ifdef ETHERNET
-    IPAddress ipAddressEth = (192, 168, 5, 1);
-    IPAddress gatewayIpEth = (0, 0, 0, 0);
-    IPAddress subnetIpEth = (255, 255, 255, 0);
-    IPAddress dnsIpEth = (0, 0, 0, 0);
+struct Config
+{
+    bool dhcpEnabledEth = false;
+    IPAddress ipAddressEth = IPAddress(192, 168, 5, 1);
+    IPAddress gatewayIpEth = IPAddress(0, 0, 0, 0);
+    IPAddress subnetIpEth = IPAddress(255, 255, 255, 0);
+    IPAddress dnsIpEth = IPAddress(0, 0, 0, 0);
     String ethlink = "not connected";
     String ethmac = "";
-#endif
-
     int relayPin[MAX_NUM_RELAYS];
     uint8_t accessdeniedpin = 255;
     uint8_t beeperpin = 255;
@@ -29,9 +26,8 @@ struct Config
     unsigned long beeperInterval = 0;
     unsigned long beeperOffTime = 0;
     byte bssid[6] = {0, 0, 0, 0, 0, 0};
-    char *deviceHostname = NULL;
-    bool dhcpEnabled = false;
-    bool dhcpEnabledEth = false;
+    char *deviceHostname = strdup("ESP32-ACTL");
+    bool dhcpEnabled = true;
     IPAddress dnsIp;
     uint8_t doorbellpin = 255;
     char *doorName[MAX_NUM_RELAYS];
