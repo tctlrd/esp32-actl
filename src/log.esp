@@ -2,7 +2,6 @@ void extern mqttPublishEvent(JsonDocument *root);
 
 void writeEvent(String type, String src, String desc, String data)
 {
-	// DynamicJsonDocument root(512);
 	JsonDocument root;
 	root["type"] = type;
 	root["src"] = src;
@@ -29,7 +28,6 @@ void writeEvent(String type, String src, String desc, String data)
 
 void writeLatest(String uid, String username, int acctype, int access = ACCESS_GRANTED)
 {
-	// DynamicJsonDocument root(512);
 	JsonDocument root;
 	root["uid"] = uid;
 	root["username"] = username;

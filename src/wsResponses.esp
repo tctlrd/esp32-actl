@@ -102,11 +102,8 @@ void sendStatus(AsyncWebSocketClient *client)
 {
 	JsonDocument root;
 	root["command"] = "status";
-
 	bool ethenabled = false;
-#ifdef ETHERNET
 	ethenabled = true;
-#endif
 	root["ethernet"] = ethenabled;
 	root["heap"] = ESP.getFreeHeap();
 	root["heapsize"] = ESP.getHeapSize();
@@ -150,9 +147,7 @@ void sendStatus(AsyncWebSocketClient *client)
 	root["hostname"] = WiFi.getHostname();
 
 	String debugver = "";
-#ifdef ETHERNET
-	debugver = "eth ";
-#endif
+
 #ifdef DEBUG
 	debugver += "debug";
 #endif
@@ -186,7 +181,6 @@ void sendStatus(AsyncWebSocketClient *client)
 		root["netmask"] = WiFi.subnetMask();
 	}
 
-#ifdef ETHERNET
 	IPAddress ipaddreth = config.ipAddressEth;
 	IPAddress gwaddreth = config.gatewayIpEth;
 	IPAddress nmaddreth = config.subnetIpEth;
@@ -198,7 +192,6 @@ void sendStatus(AsyncWebSocketClient *client)
 	root["dnseth"] = printIP(dnseth);
 	root["maceth"] = config.ethmac;
 	root["speedeth"] = config.ethlink;
-#endif
 
 	size_t len = measureJson(root);
 	AsyncWebSocketMessageBuffer *buffer = ws.makeBuffer(len);

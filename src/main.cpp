@@ -27,9 +27,7 @@ SOFTWARE.
 
 #define VERSION "0.3.0"
 
-#ifdef ETHERNET
 bool eth_connected = false;
-#endif
 
 #include "Arduino.h"
 #include "Wire.h"
@@ -180,9 +178,7 @@ unsigned long wiFiUptimeMillis = 0;
 #include "wsResponses.esp"
 #include "rfid.esp"
 #include "wifi.esp"
-#ifdef ETHERNET
 #include "ethernet.esp"
-#endif
 #include "config.esp"
 #include "websocket.esp"
 #include "webserver.esp"
@@ -202,12 +198,8 @@ void setup()
 #ifdef DEBUG
 	Serial.begin(115200);
 	Serial.println();
-
 	Serial.print(F("[ INFO ] ESP32-ACTL v"));
 	Serial.print(VERSION);
-#ifdef ETHERNET
-	Serial.print(" eth");
-#endif
 #ifdef DEBUG
 	Serial.print(" debug");
 #endif
@@ -294,18 +286,16 @@ void setup()
 #endif
 	bool configured = false;
 	configured = loadConfiguration(config);
-#ifdef ETHERNET
+	// ethernet setup
 	bool configuredeth = false;
 	configuredeth = configured;
 	eth_connected = false;
 	setupEth(configuredeth);
-
 	config.ipAddressEth = ETH.localIP();
 	config.gatewayIpEth = ETH.gatewayIP();
 	config.subnetIpEth = ETH.subnetMask();
 	config.dnsIpEth = ETH.dnsIP();
 	config.ethmac = ETH.macAddress();
-
 	String linkduplex = "HD";
 	if (ETH.fullDuplex() == true)
 	{
@@ -314,7 +304,7 @@ void setup()
 	char spd[12];
 	sprintf(spd, "%dMbps %s", ETH.linkSpeed(), linkduplex);
 	config.ethlink = (String)spd;
-#endif
+	// other setup
 	setupWifi(configured);
 	setupMqtt();
 	setupWebServer();
