@@ -1,4 +1,6 @@
 .pio
 .vscode
 tools/webfilesbuilder/node_modules
+tools/webfilesbuilder/package-lock.json
 tools/wsemulator/node_modules
+tools/wsemulator/package-lock.json
