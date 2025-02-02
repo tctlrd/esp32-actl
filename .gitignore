@@ -1,3 +1,4 @@
 .pio
 .vscode
-tools
+tools/webfilesbuilder/node_modules
+tools/wsemulator/node_modules
