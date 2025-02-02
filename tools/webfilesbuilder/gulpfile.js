@@ -92,9 +92,9 @@ function BoardsJsGzh(cb) {
 
 function scriptsConcat() {
     return gulp.src([
-            '../../src/websrc/3rdparty/js/jquery-1.12.4.min.js',
-            '../../src/websrc/3rdparty/js/bootstrap-3.3.7.min.js',
-            '../../src/websrc/3rdparty/js/footable-3.1.6.min.js',
+            '../../src/websrc/3rdparty/js/jquery.min.js',
+            '../../src/websrc/3rdparty/js/bootstrap.min.js',
+            '../../src/websrc/3rdparty/js/footable.min.js',
         ])
         .pipe(concat({
             path: 'required.js',
@@ -136,8 +136,8 @@ function scripts(cb) {
 
 function stylesConcat() {
     return gulp.src([
-            '../../src/websrc/3rdparty/css/bootstrap-3.3.7.min.css',
-            '../../src/websrc/3rdparty/css/footable.bootstrap-3.1.6.min.css',
+            '../../src/websrc/3rdparty/css/bootstrap.min.css',
+            '../../src/websrc/3rdparty/css/footable.bootstrap.min.css',
             '../../src/websrc/3rdparty/css/sidebar.css',
         ])
         .pipe(concat({
