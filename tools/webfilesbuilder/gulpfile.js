@@ -9,6 +9,32 @@ var htmlmin = require('gulp-htmlmin');
 var uglify = require('gulp-uglify');
 var pump = require('pump');
 
+function createByteArray(source, destination, arrayName, cb) {
+    try {
+        const data = fs.readFileSync(source);
+        const wstream = fs.createWriteStream(destination);
+        wstream.on('error', function (err) {
+            console.log(err);
+        });
+
+        wstream.write(`#define ${arrayName}_len ${data.length}\n`);
+        wstream.write(`const uint8_t ${arrayName}[] PROGMEM = {`);
+
+        for (let i = 0; i < data.length; i++) {
+            if (i % 1000 === 0) wstream.write('\n');
+            wstream.write('0x' + data[i].toString(16).padStart(2, '0'));
+            if (i < data.length - 1) wstream.write(',');
+        }
+
+        wstream.write('\n};');
+        wstream.end();
+        cb();
+    } catch (error) {
+        console.error('Error processing gzipped file:', error);
+        cb(error);
+    }
+}
+
 function espRfidJsMinify (cb) {
     return pump([
             gulp.src('../../src/websrc/js/esprfid.js'),
@@ -25,29 +51,11 @@ function espRfidJsGz() {
         .pipe(gulp.dest('../../src/websrc/gzipped/js/'));
 }
 
+
 function espRfidJsGzh(cb) {
-    var source = "../../src/websrc/gzipped/js/" + "esprfid.js.gz";
-    var destination = "../../src/webh/" + "esprfid.js.gz.h";
- 
-    var wstream = fs.createWriteStream(destination);
-    wstream.on('error', function (err) {
-        console.log(err);
-    });
- 
-    var data = fs.readFileSync(source);
- 
-    wstream.write('#define esprfid_js_gz_len ' + data.length + '\n');
-    wstream.write('const uint8_t esprfid_js_gz[] PROGMEM = {')
- 
-    for (i=0; i<data.length; i++) {
-        if (i % 1000 == 0) wstream.write("\n");
-        wstream.write('0x' + ('00' + data[i].toString(16)).slice(-2));
-        if (i<data.length-1) wstream.write(',');
-    }
- 
-    wstream.write('\n};')
-    wstream.end();
-    cb();
+    const source = "../../src/websrc/gzipped/js/esprfid.js.gz";
+    const destination = "../../src/webh/esprfid.js.gz.h";
+    createByteArray(source, destination, 'esprfid_js_gz', cb);
 }
 
 function BoardsJsMinify (cb) {
@@ -67,28 +75,9 @@ function BoardsJsGz() {
 }
 
 function BoardsJsGzh(cb) {
-    var source = "../../src/websrc/gzipped/js/" + "boards.js.gz";
-    var destination = "../../src/webh/" + "boards.js.gz.h";
- 
-    var wstream = fs.createWriteStream(destination);
-    wstream.on('error', function (err) {
-        console.log(err);
-    });
- 
-    var data = fs.readFileSync(source);
- 
-    wstream.write('#define boards_js_gz_len ' + data.length + '\n');
-    wstream.write('const uint8_t boards_js_gz[] PROGMEM = {')
- 
-    for (i=0; i<data.length; i++) {
-        if (i % 1000 == 0) wstream.write("\n");
-        wstream.write('0x' + ('00' + data[i].toString(16)).slice(-2));
-        if (i<data.length-1) wstream.write(',');
-    }
- 
-    wstream.write('\n};')
-    wstream.end();
-    cb();
+    const source = "../../src/websrc/gzipped/js/boards.js.gz";
+    const destination = "../../src/webh/boards.js.gz.h";
+    createByteArray(source, destination, 'boards_js_gz', cb);
 }
 
 function scriptsConcat() {
@@ -111,28 +100,9 @@ function scriptsConcat() {
 }
 
 function scripts(cb) {
-    var source = "../../src/websrc/gzipped/js/" + "required.js.gz";
-    var destination = "../../src/webh/" + "required.js.gz.h";
- 
-    var wstream = fs.createWriteStream(destination);
-    wstream.on('error', function (err) {
-        console.log(err);
-    });
- 
-    var data = fs.readFileSync(source);
- 
-    wstream.write('#define required_js_gz_len ' + data.length + '\n');
-    wstream.write('const uint8_t required_js_gz[] PROGMEM = {')
- 
-    for (i=0; i<data.length; i++) {
-        if (i % 1000 == 0) wstream.write("\n");
-        wstream.write('0x' + ('00' + data[i].toString(16)).slice(-2));
-        if (i<data.length-1) wstream.write(',');
-    }
- 
-    wstream.write('\n};')
-    wstream.end();
-    cb();
+    const source = "../../src/websrc/gzipped/js/required.js.gz";
+    const destination = "../../src/webh/required.js.gz.h";
+    createByteArray(source, destination, 'required_js_gz', cb);
 }
 
 function stylesConcat() {
@@ -155,28 +125,9 @@ function stylesConcat() {
 }
 
 function styles(cb) {
-    var source = "../../src/websrc/gzipped/css/" + "required.css.gz";
-    var destination = "../../src/webh/" + "required.css.gz.h";
- 
-    var wstream = fs.createWriteStream(destination);
-    wstream.on('error', function (err) {
-        console.log(err);
-    });
- 
-    var data = fs.readFileSync(source);
- 
-    wstream.write('#define required_css_gz_len ' + data.length + '\n');
-    wstream.write('const uint8_t required_css_gz[] PROGMEM = {')
- 
-    for (i=0; i<data.length; i++) {
-        if (i % 1000 == 0) wstream.write("\n");
-        wstream.write('0x' + ('00' + data[i].toString(16)).slice(-2));
-        if (i<data.length-1) wstream.write(',');
-    }
- 
-    wstream.write('\n};')
-    wstream.end();
-    cb();	
+    const source = "../../src/websrc/gzipped/css/required.css.gz";
+    const destination = "../../src/webh/required.css.gz.h";
+    createByteArray(source, destination, 'required_css_gz', cb);
 }
 
 function fontgz(cb) {
@@ -203,27 +154,14 @@ function fontgz(cb) {
 
 function fonts() {
     return gulp.src("../../src/websrc/gzipped/fonts/*.*")
-    .pipe(flatmap(function(stream, file) {
-        var filename = path.basename(file.path);
-        var wstream = fs.createWriteStream("../../src/webh/" + filename + ".h");
-        wstream.on("error", function(err) {
-            gutil.log(err);
-        });
-        var data = file.contents;
-        wstream.write("#define " + filename.replace(/\.|-/g, "_") + "_len " + data.length + "\n");
-        wstream.write("const uint8_t " + filename.replace(/\.|-/g, "_") + "[] PROGMEM = {")
-        
-        for (i = 0; i < data.length; i++) {
-            if (i % 1000 == 0) wstream.write("\n");
-            wstream.write('0x' + ('00' + data[i].toString(16)).slice(-2));
-            if (i < data.length - 1) wstream.write(',');
-        }
-
-        wstream.write("\n};")
-        wstream.end();
-
-        return stream;
-    }));
+        .pipe(flatmap(function(stream, file) {
+            const filename = path.basename(file.path);
+            const source = file.path;
+            const destination = `../../src/webh/${filename}.h`;
+            const arrayName = filename.replace(/\.|-/g, "_");
+            createByteArray(source, destination, arrayName, function() {});
+            return stream;
+        }));
 }
 
 function htmlsPrep() {
@@ -246,27 +184,14 @@ function htmlsGz() {
 
 function htmls() {
     return gulp.src("../../src/websrc/gzipped/*.gz")
-    .pipe(flatmap(function(stream, file) {
-        var filename = path.basename(file.path);
-        var wstream = fs.createWriteStream("../../src/webh/" + filename + ".h");
-        wstream.on("error", function(err) {
-            gutil.log(err);
-        });
-        var data = file.contents;
-        wstream.write("#define " + filename.replace(/\.|-/g, "_") + "_len " + data.length + "\n");
-        wstream.write("const uint8_t " + filename.replace(/\.|-/g, "_") + "[] PROGMEM = {")
-        
-        for (i = 0; i < data.length; i++) {
-            if (i % 1000 == 0) wstream.write("\n");
-            wstream.write('0x' + ('00' + data[i].toString(16)).slice(-2));
-            if (i < data.length - 1) wstream.write(',');
-        }
-
-        wstream.write("\n};")
-        wstream.end();
-
-        return stream;
-    }));
+        .pipe(flatmap(function(stream, file) {
+            const filename = path.basename(file.path);
+            const source = file.path;
+            const destination = `../../src/webh/${filename}.h`;
+            const arrayName = filename.replace(/\.|-/g, "_");
+            createByteArray(source, destination, arrayName, function() {});
+            return stream;
+        }));
 }
 
 async function runner() {
