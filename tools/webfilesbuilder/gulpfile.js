@@ -27,16 +27,12 @@ const ensureDirs = (cb) => {
 
 // Minify JavaScript files
 function minify(srcFolder, destFolder) {
-    return gulp.src(`${srcFolder}*.js`)
-        .pipe(uglify())
-        .pipe(gulp.dest(destFolder));
+    return gulp.src(`${srcFolder}*.js`).pipe(uglify()).pipe(gulp.dest(destFolder));
 }
 
 // Concat files into a single file.
 function merge(srcFolder, fileType, destDir, outputFile) {
-    return gulp.src(`${srcFolder}*.${fileType}`)
-        .pipe(concat({path: outputFile, stat: { mode: 0o666 }}))
-        .pipe(gulp.dest(destDir));
+    return gulp.src(`${srcFolder}*.${fileType}`).pipe(concat({path: outputFile, stat: { mode: 0o666 }})).pipe(gulp.dest(destDir));
 }
 
 // Gzip files
@@ -65,22 +61,13 @@ function byteArray(source, destination, name, cb) {
 // Task: Process assets (scripts, UI scripts, HTML, styles, fonts)
 const process = (cb) => {
     console.log('PROCESS UI & 3RDPARTY FILES TO FINAL: minify, merge, copy');
-    const minifyThirdPartyScripts = () => minify(`${tpDir}js/`, `${mnDir}`);
-    const mergeThirdPartyScripts = () => merge(`${mnDir}`, 'js', `${fnDir}`, `${mn}.js`);
-    const minifyUIScripts = () => minify(`${uiDir}`, `${fnDir}`);
-    const minifyHTMLFiles = () => gulp.src(`${uiDir}*.htm*`)
-        .pipe(htmlmin({ collapseWhitespace: true, minifyJS: true }).on('error', console.error))
-        .pipe(gulp.dest(`${fnDir}`));
-    const mergeCSSFiles = () => merge(`${tpDir}css/`, 'css', `${fnDir}`, `${mn}.css`);
+    const minifyJS = () => minify(`${tpDir}js/`, `${mnDir}`);
+    const mergeJS = () => merge(`${mnDir}`, 'js', `${fnDir}`, `${mn}.js`);
+    const mergeCSS = () => merge(`${tpDir}css/`, 'css', `${fnDir}`, `${mn}.css`);
+    const minifyUIjs = () => minify(`${uiDir}`, `${fnDir}`);
+    const minifyUIhtml = () => gulp.src(`${uiDir}*.htm*`).pipe(htmlmin({ collapseWhitespace: true, minifyJS: true }).on('error', console.error)).pipe(gulp.dest(`${fnDir}`));
     const copyFonts = () => gulp.src(`${tpDir}fonts/*.*`).pipe(gulp.dest(`${fnDir}`));
-
-    gulp.parallel(
-        gulp.series(minifyThirdPartyScripts, mergeThirdPartyScripts),
-        minifyUIScripts,
-        minifyHTMLFiles,
-        mergeCSSFiles,
-        copyFonts
-    )(cb);
+    gulp.parallel(gulp.series(minifyJS, mergeJS), minifyUIjs, minifyUIhtml, mergeCSS, copyFonts)(cb);
 };
 
 // Task: Gzip files
