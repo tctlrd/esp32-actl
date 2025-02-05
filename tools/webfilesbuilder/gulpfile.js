@@ -72,7 +72,7 @@ const process = (cb) => {
 
 // Task: Gzip files
 function gzipAll(cb) {
-    console.log('GZIP FINAL FILES');
+    console.log('GZIP FROM FINAL');
     const files = fs.readdirSync(fnDir);
     const tasks = files.map((file) => {
         const srcFile = path.join(fnDir, file);
@@ -86,7 +86,7 @@ function gzipAll(cb) {
 
 // Task: Create byte arrays from gzipped files
 function byteArrayAll(cb) {
-    console.log('BYTE ARRAY GZIP FILES');
+    console.log('BYTE ARRAY FROM GZIP');
     const files = fs.readdirSync(gzDir);
     const tasks = files.map(file => {
         const srcFile = path.join(gzDir, file);
