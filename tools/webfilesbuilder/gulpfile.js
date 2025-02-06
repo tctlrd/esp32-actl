@@ -67,7 +67,7 @@ function byteArray(source, destination, name, cb) {
     wstream.write(`#define ${arrayName}_len ${data.length}\n`);
     wstream.write(`const uint8_t ${arrayName}[] PROGMEM = {`);
     for (let i = 0; i < data.length; i++) {
-        if (i % 1000 === 0) 
+        if (i % 1000 === 0)
             wstream.write('\n');
         wstream.write('0x' + data[i].toString(16).padStart(2, '0') + (i < data.length - 1 ? ',' : ''));
     }
@@ -81,10 +81,8 @@ const process = (cb) => {
     const mergeJS = () => merge(`${tpDir}js/`, 'js', `${fnDir}`, `${mn}.js`);
     const mergeCSS = () => merge(`${tpDir}css/`, 'css', `${fnDir}`, `${mn}.css`);
     const minifyUIjs = () => minify(`${uiDir}`, `${fnDir}`);
-    const minifyUIhtml = () => gulp.src(`${uiDir}*.htm*`).pipe(htmlmin({collapseWhitespace: true, minifyJS: true}).on('error', console.error)).pipe(gulp.dest(`${fnDir}`));
-    const copyFonts = (cb) => {
-        fs.copy(`${tpDir}fonts/`, `${fnDir}`, cb);
-    };
+    const minifyUIhtml = () => gulp.src(`${uiDir}*.htm*`).pipe(htmlmin({ collapseWhitespace: true, minifyJS: true }).on('error', console.error)).pipe(gulp.dest(`${fnDir}`));
+    const copyFonts = (cb) => { fs.copy(`${tpDir}fonts/`, `${fnDir}`, cb); };
     gulp.parallel(mergeJS, minifyUIjs, minifyUIhtml, mergeCSS, copyFonts)(cb);
 };
 
@@ -96,10 +94,10 @@ function gzipAll(cb) {
         const srcFile = path.join(fnDir, file);
         const destFile = path.join(gzDir, file + '.gz');
         const taskName = (done) => gzip(srcFile, destFile, done);
-        Object.defineProperty(taskName, 'name', {value: `${file}.gz`});
+        Object.defineProperty(taskName, 'name', { value: `${file}.gz` });
         return taskName;
     });
-    gulp.parallel(... tasks)(cb);
+    gulp.parallel(...tasks)(cb);
 }
 
 // Task: Create byte arrays from gzipped files
@@ -110,10 +108,10 @@ function byteArrayAll(cb) {
         const srcFile = path.join(gzDir, file);
         const destFile = `${webh}${file}.h`;
         const taskName = (done) => byteArray(srcFile, destFile, file, done);
-        Object.defineProperty(taskName, 'name', {value: `${file}.h`});
+        Object.defineProperty(taskName, 'name', { value: `${file}.h` });
         return taskName;
     });
-    gulp.parallel(... tasks)(cb);
+    gulp.parallel(...tasks)(cb);
 }
 
 // Main runner function
