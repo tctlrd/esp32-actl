@@ -48,7 +48,7 @@ void setupWebServer() {
 	});
 	
 	server.on("/fonts/glyphicons-halflings-regular.woff", HTTP_GET, [](AsyncWebServerRequest *request) {
-		AsyncWebServerResponse *response = request->beginResponse(200, "font/woff", glyphicons_halflings_regular_woff_gz, glyphicons_halflings_regular_woff_gz_len);
+		AsyncWebServerResponse *response = request->beginResponse(200, "font/woff", glyphicons_woff_gz, glyphicons_woff_gz_len);
 		response->addHeader("Content-Encoding", "gzip");
 		request->send(response);
 	});

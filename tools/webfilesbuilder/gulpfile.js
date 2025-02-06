@@ -66,7 +66,7 @@ const process = (cb) => {
     const mergeCSS = () => merge(`${tpDir}css/`, 'css', `${fnDir}`, `${mn}.css`);
     const minifyUIjs = () => minify(`${uiDir}`, `${fnDir}`);
     const minifyUIhtml = () => gulp.src(`${uiDir}*.htm*`).pipe(htmlmin({ collapseWhitespace: true, minifyJS: true }).on('error', console.error)).pipe(gulp.dest(`${fnDir}`));
-    const copyFonts = () => gulp.src(`${tpDir}fonts/*.*`).pipe(gulp.dest(`${fnDir}`));
+    const copyFonts = (cb) => {fs.copy(`${tpDir}fonts/`, `${fnDir}`, cb);};
     gulp.parallel(gulp.series(minifyJS, mergeJS), minifyUIjs, minifyUIhtml, mergeCSS, copyFonts)(cb);
 };
 

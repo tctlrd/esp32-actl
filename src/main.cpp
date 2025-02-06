@@ -120,7 +120,7 @@ const byte CARD_FILE_ID = 0;
 const byte CARD_KEY_VERSION = 0x10;
 
 // these are from vendors
-#include "webh/glyphicons-halflings-regular.woff.gz.h"
+#include "webh/glyphicons.woff.gz.h"
 #include "webh/required.css.gz.h"
 #include "webh/required.js.gz.h"
 
