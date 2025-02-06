@@ -2416,15 +2416,15 @@ function start() {
   esprfidcontent.id = "mastercontent";
   esprfidcontent.style.display = "none";
   document.body.appendChild(esprfidcontent);
-  $("#signin").on("shown.bs.modal", function () {
+  $("#signin").on("shown.bs.modal", function() {
     $("#password").focus().select();
   });
-  $("#mastercontent").load("esprfid.htm", function (responseTxt, statusTxt, xhr) {
+  $("#mastercontent").load("esprfid.htm", function(responseTxt, statusTxt, xhr) {
     if (statusTxt === "success") {
       $("#signin").modal({
         backdrop: "static",
         keyboard: false
-      });
+      }).modal('show');
       $("[data-toggle=\"popover\"]").popover({
         container: "body"
       });

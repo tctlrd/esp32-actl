@@ -1,7 +1,5 @@
 #define MAX_WS_BUFFER 2048
 
-char wsBuffer[MAX_WS_BUFFER];
-
 struct WsMessage
 {
 	char *serializedMessage;
