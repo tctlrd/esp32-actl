@@ -102,8 +102,7 @@ void sendStatus(AsyncWebSocketClient *client)
 {
 	JsonDocument root;
 	root["command"] = "status";
-	bool ethenabled = false;
-	ethenabled = true;
+	bool ethenabled = true;
 	root["ethernet"] = ethenabled;
 	root["heap"] = ESP.getFreeHeap();
 	root["heapsize"] = ESP.getHeapSize();

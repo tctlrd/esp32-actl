@@ -49,7 +49,7 @@ void WiFiEvent(WiFiEvent_t event)
 	}
 }
 
-void setupEth(bool configured)
+void setupEth()
 {
 	// Add a handler for network events. This is misnamed "WiFi" because the ESP32 is historically WiFi only,
 	// but in our case, this will react to Ethernet events.

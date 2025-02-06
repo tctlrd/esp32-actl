@@ -27,8 +27,6 @@ SOFTWARE.
 
 #define VERSION "0.3.0"
 
-bool eth_connected = false;
-
 #include "Arduino.h"
 #include "Wire.h"
 #include <SPI.h>
@@ -54,12 +52,13 @@ IO2 io2 = IO2(); // set I2C address of MOD-IO2
 #include <Update.h>
 #include "magicnumbers.h"
 #include "config.h"
-Config config;
+
 #include <WiegandNG.h>
 
+Config config;
 File fsUploadFile;
-
 WiegandNG wg;
+Desfire desfire;
 
 // relay specific variables
 #if MAX_NUM_RELAYS == 4
@@ -78,8 +77,6 @@ bool deactivateRelay[MAX_NUM_RELAYS] = {false, false};
 bool activateRelay[MAX_NUM_RELAYS] = {false};
 bool deactivateRelay[MAX_NUM_RELAYS] = {false};
 #endif
-
-Desfire desfire;
 
 // The PICC master key.
 // This 3K3DES or AES key is the "god key".
@@ -151,6 +148,7 @@ unsigned long currentMillis = 0;
 unsigned long deltaTime = 0;
 bool doEnableWifi = false;
 bool doEnableEth = false;
+bool eth_connected = false;
 bool formatreq = false;
 const char *httpUsername = "admin";
 unsigned long keyTimer = 0;
@@ -287,10 +285,7 @@ void setup()
 	bool configured = false;
 	configured = loadConfiguration(config);
 	// ethernet setup
-	bool configuredeth = false;
-	configuredeth = configured;
-	eth_connected = false;
-	setupEth(configuredeth);
+	setupEth();
 	config.ipAddressEth = ETH.localIP();
 	config.gatewayIpEth = ETH.gatewayIP();
 	config.subnetIpEth = ETH.subnetMask();
@@ -354,7 +349,6 @@ void IRAM_ATTR loop()
 	}
 
 	// relay
-
 	for (int currentRelay = 0; currentRelay < config.numRelays; currentRelay++)
 	{
 		if (config.lockType[currentRelay] == LOCKTYPE_CONTINUOUS) // Continuous relay mode
