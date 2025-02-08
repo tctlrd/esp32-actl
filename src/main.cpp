@@ -143,6 +143,7 @@ AsyncWebSocket ws("/ws");
 #define BEEPERon LOW
 
 // Variables for whole scope
+bool configured = false;
 unsigned long cooldown = 0;
 unsigned long currentMillis = 0;
 unsigned long deltaTime = 0;
@@ -282,7 +283,6 @@ void setup()
 	delay(700);
 	io2.setRelay(RELAY2, OFF);
 #endif
-	bool configured = false;
 	configured = loadConfiguration(config);
 	// ethernet setup
 	setupEth();

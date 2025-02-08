@@ -191,9 +191,9 @@ void sendStatus(AsyncWebSocketClient *client)
 	root["dnseth"] = printIP(dnseth);
 	root["maceth"] = config.ethmac;
 	root["speedeth"] = config.ethlink;
-
 	size_t len = measureJson(root);
 	AsyncWebSocketMessageBuffer *buffer = ws.makeBuffer(len);
+
 	if (buffer)
 	{
 		serializeJson(root, (char *)buffer->get(), len + 1);
