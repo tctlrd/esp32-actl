@@ -459,7 +459,7 @@ void rfidOutsideMessaging()
 		AsyncWebSocketMessageBuffer *buffer = ws.makeBuffer(len);
 		if (buffer)
 		{
-			serializeJson(root, (char *)buffer->get(), len + 1);
+			serializeJson(root, (char *)buffer->get(), len);
 			ws.textAll(buffer);
 		}
 		mqttPublishAccess(epoch, "false", "Denied", "Unknown", uid, " ");
@@ -480,7 +480,7 @@ void rfidOutsideMessaging()
 		AsyncWebSocketMessageBuffer *buffer = ws.makeBuffer(len);
 		if (buffer)
 		{
-			serializeJson(root, (char *)buffer->get(), len + 1);
+			serializeJson(root, (char *)buffer->get(), len);
 			ws.textAll(buffer);
 		}
 	}
