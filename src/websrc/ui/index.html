@@ -32,70 +32,70 @@
         <!-- Sidebar Holder -->
         <nav id="sidebar">
             <div id="dismiss">
-                <i class="glyphicon glyphicon-arrow-left"></i>
+                <i class="bi bi-arrow-left"></i>
             </div>
             <div class="sidebar-header">
-                <h2><i class="glyphicon glyphicon-tags" aria-hidden="true"></i>esp32-rfid</h2>
+                <h2><i class="bi bi-tags" aria-hidden="true"></i>esp32-actl</h2>
                 <div id="systemname" style='text-align: center;'></div>
             </div>
             <ul class="list-unstyled components">
                 <li id="listatus" class="active">
-                    <a href="#" id="status"><i class="glyphicon glyphicon-info-sign"></i>Status</a>
+                    <a href="#" id="status"><i class="bi bi-info-circle"></i>Status</a>
                 </li>
                 <li id="lisettings">
-                    <a href="#homeSubmenu" data-bs-toggle="collapse" aria-expanded="false"><i class="glyphicon glyphicon-cog"></i>Settings</a>
+                    <a href="#homeSubmenu" data-bs-toggle="collapse" aria-expanded="false"><i class="bi bi-gear"></i>Settings</a>
                     <ul class="collapse list-unstyled" id="homeSubmenu">
                         <li id="liwifi">
-                            <a href="#" id="network"><i class="glyphicon glyphicon-signal"></i>Wireless Network</a>
+                            <a href="#" id="network"><i class="bi bi-wifi"></i>Wireless Network</a>
                         </li>
-                        <li id="ethernet" style="display:none;">
-                            <a href="#" id="networketh"><i class="glyphicon glyphicon-random"></i>Ethernet Network</a>
+                        <li id="ethernet">
+                            <a href="#" id="networketh"><i class="bi bi-ethernet"></i>Ethernet Network</a>
                         </li>
                         <li id="lihardware">
-                            <a href="#" id="hardware"><i class="glyphicon glyphicon-wrench"></i>Hardware Settings</a>
+                            <a href="#" id="hardware"><i class="bi bi-wrench"></i>Hardware Settings</a>
                         </li>
                         <li id="ligeneral">
-                            <a href="#" id="general"><i class="glyphicon glyphicon-list-alt"></i>General Settings</a>
+                            <a href="#" id="general"><i class="bi bi-card-list"></i>General Settings</a>
                         </li>
                         <li id="limqtt">
-                            <a href="#" id="mqtt"><i class="glyphicon glyphicon-link"></i>MQTT Settings</a>
+                            <a href="#" id="mqtt"><i class="bi bi-link"></i>MQTT Settings</a>
                         </li>
                         <li id="lintp">
-                            <a href="#" id="ntp"><i class="glyphicon glyphicon-time"></i>NTP (Time) Settings</a>
+                            <a href="#" id="ntp"><i class="bi bi-clock"></i>NTP (Time) Settings</a>
                         </li>
                     </ul>
                 </li>
                 <li id="liusers">
-                    <a href="#" id="users"><i class="glyphicon glyphicon-user"></i>Users</a>
+                    <a href="#" id="users"><i class="bi bi-person"></i>Users</a>
                 </li>
                 <li id="lilogs">
-                    <a href="#logsSubmenu" data-bs-toggle="collapse" aria-expanded="false"><i class="glyphicon glyphicon-folder-open"></i>Logs</a>
+                    <a href="#logsSubmenu" data-bs-toggle="collapse" aria-expanded="false"><i class="bi bi-folder2-open"></i>Logs</a>
                     <ul class="collapse list-unstyled" id="logsSubmenu">
                         <li id="lilatest">
-                            <a href="#" id="latestlog"><i class="glyphicon glyphicon-calendar"></i>Access Log</a>
+                            <a href="#" id="latestlog"><i class="bi bi-calendar"></i>Access Log</a>
                         </li>
                         <li id="lievent">
-                            <a href="#" id="eventlog"><i class="glyphicon glyphicon-transfer"></i>Event Log</a>
+                            <a href="#" id="eventlog"><i class="bi bi-arrows-move"></i>Event Log</a>
                         </li>
                         <li id="lilogmain">
-                            <a href="#" id="logmaintenance"><i class="glyphicon glyphicon-wrench"></i>Logfile Maintenance</a>
+                            <a href="#" id="logmaintenance"><i class="bi bi-wrench"></i>Logfile Maintenance</a>
                         </li>
                     </ul>
                 </li>
                 <li>
                     <li id="libackup">
-                        <a href="#" id="backup"><i class="glyphicon glyphicon-floppy-disk"></i>Backup & Restore</a>
+                        <a href="#" id="backup"><i class="bi bi-save"></i>Backup & Restore</a>
                     </li>
                     <li id="lireset">
-                        <a href="#" id="reset"><i class="glyphicon glyphicon-repeat"></i>Factory Reset</a>
+                        <a href="#" id="reset"><i class="bi bi-arrow-repeat"></i>Factory Reset</a>
                     </li>
                     <li id="liupdate">
-                        <a data-bs-toggle="modal" href="#update"><i class="glyphicon glyphicon-open"></i>Update</a>
+                        <a data-bs-toggle="modal" href="#update"><i class="bi bi-box-arrow-in-up"></i>Update</a>
                     </li>
             </ul>
             <ul class="list-unstyled CTAs">
                 <li>
-                    <a href="https://codeberg.org/tctlrd/esp32-rfid" class="download" target="_new">Project's GitHub Page</a>
+                    <a href="https://codeberg.org/tctlrd/esp32-actl" class="download" target="_new">Project's Git Page</a>
                 </li>
                 <li>
                     <a href="#" class="article" onclick="logout();">Logout</a>
@@ -108,12 +108,12 @@
         <!-- Page Content Holder -->
         <div id="content">
             <button type="button" id="sidebarCollapse" class="btn btn-info navbar-btn">
-                <i class="glyphicon glyphicon-menu-hamburger"></i>
+                <i class="bi bi-list"></i>
                 <span>Menu</span>
             </button>
             <div class="float-right" id="ws-connection-status">
                 <div class="alert alert-warning" role="alert">
-                    <i class="glyphicon glyphicon-warning-sign"></i>
+                    <i class="bi bi-exclamation-triangle"></i>
                     <span>Connection with esp32-rfid absent. Reconnecting...</span>
                 </div>
             </div>
@@ -247,16 +247,10 @@
                 </div>
             </div>
         </div>
-        <footer class="footer">
-            <div id="commit" class="container">
-                <h6 class="text-muted"><a href="https://github.com/tctlrd/esp32-rfid" target="_new">source code</a></h6>
-            </div>
-        </footer>
         <div class="overlay"></div>
         <script src="js/required.js"></script>
         <script src="js/esprfid.js"></script>
         <script src="js/boards.js"></script>
         <script>start();</script>
 </body>
-
 </html>

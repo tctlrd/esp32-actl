@@ -569,7 +569,7 @@ function handleDHCP() {
 }
 
 function handleDHCPEth() {
-  if (document.querySelector("input[name=\"dhcpenabledeth\"]:checked").value === "1") {
+  if (document.querySelector("input[name=\"dhcpenabledeth\"]:checked").value === "0") {
     $("#staticipeth2").slideUp();
     $("#staticipeth1").slideUp();
   } else {
@@ -981,11 +981,11 @@ function backupuser() {
 }
 
 function backupset() {
-  saveLogfile(config, "downloadSet", "esp32-actl-settings.json")
+  saveLogfile(config, "downloadSet", "esp-rfid-settings.json")
 }
 
 function piccBackup(obj) {
-  saveLogfile(obj, "downloadUser", "esp32-actl-users.json")
+  saveLogfile(obj, "downloadUser", "esp-rfid-users.json")
   backupstarted = false;
 }
 
@@ -1058,7 +1058,7 @@ function restoreUser() {
           alert("Not a valid backup file");
           return;
         }
-        if (json.type === "esp32-actl-userbackup") {
+        if (json.type === "esp-rfid-userbackup") {
           var x = confirm("File seems to be valid, do you wish to continue?");
           if (x) {
             recordstorestore = json.list.length;
@@ -1137,21 +1137,21 @@ function initFileListTable() {
           var actions = $('<div/>')
 
           var user_button = ($('<a/>', { 'class': 'btn btn-sm btn-default', 'filename': value })
-            .append($('<span/>', { 'class': 'glyphicon glyphicon-trash' }))
+            .append($('<span/>', { 'class': 'bi bi-trash' }))
             .on("click", this, deletefile))
             .appendTo(actions);
           var user_button = ($('<a/>', { 'class': 'btn btn-sm btn-default', 'filename': value })
-            .append($('<span/>', { 'class': 'glyphicon glyphicon-search' }))
+            .append($('<span/>', { 'class': 'bi bi-search' }))
             .on("click", this, viewfile))
             .appendTo(actions);
           var user_button = ($('<a/>', { 'class': 'btn btn-sm btn-default', 'filename': value })
-            .append($('<span/>', { 'class': 'glyphicon glyphicon-resize-full' }))
+            .append($('<span/>', { 'class': 'bi bi-arrows-angle-expand' }))
             .on("click", this, splitfile))
             .appendTo(actions);
 
           if ((value === "/latestlog.json") || (value === "/eventlog.json")) {
             var user_button = ($('<a/>', { 'class': 'btn btn-sm btn-default', 'filename': value })
-              .append($('<span/>', { 'class': 'glyphicon glyphicon-refresh' }))
+              .append($('<span/>', { 'class': 'bi bi-arrow-clockwise' }))
               .on("click", this, rollover))
               .appendTo(actions);
           }
@@ -1502,7 +1502,7 @@ function initUserTable() {
         ],
         rows: data,
         editing: {
-          showText: "<span class=\"fooicon fooicon-pencil\" aria-hidden=\"true\"></span> Edit Users",
+          showText: "<span class=\"bi bi-pencil\" aria-hidden=\"true\"></span> Edit Users",
           addText: "New User",
           addRow: function () {
             $editor[0].reset();
@@ -1716,7 +1716,7 @@ function socketMessageListener(evt) {
             $(".footable-show").click();
             $(".fooicon-remove").click();
           } else {
-            file.type = "esp32-actl-userbackup";
+            file.type = "esp-rfid-userbackup";
             file.version = "v0.6";
             file.list = data;
             piccBackup(file);
@@ -1802,15 +1802,15 @@ function saveLogfile(obj, anchorElement, filename) {
 }
 
 function saveevent() {
-  file.type = "esp32-actl-eventlog";
+  file.type = "esp-rfid-eventlog";
   file.list = data;
-  saveLogfile(file, "downloadEvent", "esp32-actl-eventlog.json");
+  saveLogfile(file, "downloadEvent", "esp-rfid-eventlog.json");
 }
 
 function savelatest() {
-  file.type = "esp32-actl-accesslog";
+  file.type = "esp-rfid-accesslog";
   file.list = data;
-  saveLogfile(file, "downloadLatest", "esp32-actl-accesslog.json");
+  saveLogfile(file, "downloadLatest", "esp-rfid-accesslog.json");
 }
 
 function clearlatest() {
