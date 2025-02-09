@@ -852,8 +852,10 @@ function colorStatusbar(ref) {
 }
 
 function removeModal() {
-  var myModal = bootstrap.Modal.getInstance(document.getElementById("restoremodal"));
-  myModal.hide();
+  const modal = bootstrap.Modal.getInstance(document.getElementById("restoremodal"));
+  if (modal) {
+    modal.hide();
+  }
   $("body").removeClass("modal-open");
   $("body").css("padding-right", "0px");
   $(".modal-backdrop").remove();
