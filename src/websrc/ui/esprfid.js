@@ -570,15 +570,15 @@ function handleDHCP() {
 
 function handleDHCPEth() {
   if (document.querySelector("input[name=\"dhcpenabledeth\"]:checked").value === "0") {
-    $("#staticipeth2").slideUp();
-    $("#staticipeth1").slideUp();
-  } else {
     document.getElementById("ipaddresseth").value = config.network.ipeth;
     document.getElementById("subneteth").value = config.network.subneteth;
     $("#staticipeth1").slideDown();
     $("#staticipeth1").show();
     $("#staticipeth2").slideDown();
     $("#staticipeth2").show();
+  } else {
+    $("#staticipeth2").slideUp();
+    $("#staticipeth1").slideUp();
   }
 }
 

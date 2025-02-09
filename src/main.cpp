@@ -322,7 +322,7 @@ void IRAM_ATTR loop()
 	uptimeSeconds = currentMillis / 1000;
 	previousLoopMillis = currentMillis;
 
-	trySyncNTPtime(10);
+	//trySyncNTPtime(10);
 
 	if (config.openlockpin != 255)
 	{

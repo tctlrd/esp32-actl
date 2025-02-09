@@ -565,13 +565,13 @@
         <div class="col-xs-9">
             <form>
                 <label class="radio-inline">
-                    <input type="radio" value="1" name="dhcpenabledeth" onclick="handleDHCPEth();">Yes</label>
+                    <input type="radio" value="1" name="dhcpenabled" onclick="handleDHCP();" checked>Yes</label>
                 <label class="radio-inline">
-                    <input type="radio" value="0" name="dhcpenabledeth" onclick="handleDHCPEth();" checked>No</label>
+                    <input type="radio" value="0" name="dhcpenabled" onclick="handleDHCP();">No</label>
             </form>
         </div>
     </div>
-    <div id="staticip1" style="display:none">
+    <div id="staticip1">
         <div class="row form-group">
             <label class="col-xs-3">IP Address<i style="margin-left: 10px;" class="bi bi-info-circle" aria-hidden="true" data-html="true" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Enter IP Address<BR>(for example 192.168.4.1)"></i></label>
             <span class="col-xs-9 col-md-5">
@@ -585,7 +585,7 @@
               </span>
         </div>
     </div>
-    <div id="staticip2" style="display:none">
+    <div id="staticip2">
         <div class="row form-group">
             <label class="col-xs-3">DNS Server</label>
             <span class="col-xs-9 col-md-5">
@@ -643,13 +643,13 @@
         <div class="col-xs-9">
             <form>
                 <label class="radio-inline">
-                    <input type="radio" value="0" name="dhcpenabledeth" onclick="handleDHCPEth();" checked>Yes</label>
+                    <input type="radio" value="0" name="dhcpenabledeth" onclick="handleDHCPEth();" checked>No</label>
                 <label class="radio-inline">
-                    <input type="radio" value="1" name="dhcpenabledeth" onclick="handleDHCPEth();">No</label>
+                    <input type="radio" value="1" name="dhcpenabledeth" onclick="handleDHCPEth();">Yes</label>
             </form>
         </div>
     </div>
-    <div id="staticipeth1" style="display:none">
+    <div id="staticipeth1">
         <div class="row form-group">
             <label class="col-xs-3">IP Address<i style="margin-left: 10px;" class="bi bi-info-circle" aria-hidden="true" data-html="true" data-toggle="popover" data-trigger="hover" data-placement="right" data-content="Enter IP Address<BR>(for example 192.168.4.1)"></i></label>
             <span class="col-xs-9 col-md-5">
@@ -663,7 +663,7 @@
               </span>
         </div>
     </div>
-    <div id="staticipeth2" style="display:none">
+    <div id="staticipeth2">
         <div class="row form-group">
             <label class="col-xs-3">DNS Server</label>
             <span class="col-xs-9 col-md-5">
