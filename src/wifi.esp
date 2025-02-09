@@ -129,7 +129,7 @@ bool connectSTA(const char *ssid, const char *password, byte bssid[6])
     for (int i = 0; i < 6; i++)
     {
 #ifdef DEBUG
-        Serial.print(bssid[i]);
+        Serial.printf("%02X", bssid[i]);
         if (i < 5)
             Serial.print(F(":"));
         else
@@ -226,7 +226,7 @@ void setupWifi(bool configured)
 {
     if (!configured)
     {
-        WiFi.hostname("esp32-actl");
+        WiFi.hostname(config.deviceHostname);
         fallbacktoAPMode();
     }
     else

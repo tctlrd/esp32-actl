@@ -27,10 +27,6 @@ SOFTWARE.
 
 #define VERSION "0.3.0"
 
-#ifdef ETHERNET
-bool eth_connected = false;
-#endif
-
 #include "Arduino.h"
 #include "Wire.h"
 #include <SPI.h>
@@ -56,12 +52,13 @@ IO2 io2 = IO2(); // set I2C address of MOD-IO2
 #include <Update.h>
 #include "magicnumbers.h"
 #include "config.h"
-Config config;
+
 #include <WiegandNG.h>
 
+Config config;
 File fsUploadFile;
-
 WiegandNG wg;
+Desfire desfire;
 
 // relay specific variables
 #if MAX_NUM_RELAYS == 4
@@ -80,8 +77,6 @@ bool deactivateRelay[MAX_NUM_RELAYS] = {false, false};
 bool activateRelay[MAX_NUM_RELAYS] = {false};
 bool deactivateRelay[MAX_NUM_RELAYS] = {false};
 #endif
-
-Desfire desfire;
 
 // The PICC master key.
 // This 3K3DES or AES key is the "god key".
@@ -122,7 +117,7 @@ const byte CARD_FILE_ID = 0;
 const byte CARD_KEY_VERSION = 0x10;
 
 // these are from vendors
-#include "webh/glyphicons-halflings-regular.woff.gz.h"
+#include "webh/bootstrap-icons.woff2.gz.h"
 #include "webh/required.css.gz.h"
 #include "webh/required.js.gz.h"
 
@@ -148,11 +143,13 @@ AsyncWebSocket ws("/ws");
 #define BEEPERon LOW
 
 // Variables for whole scope
+bool configured = false;
 unsigned long cooldown = 0;
 unsigned long currentMillis = 0;
 unsigned long deltaTime = 0;
 bool doEnableWifi = false;
 bool doEnableEth = false;
+bool eth_connected = false;
 bool formatreq = false;
 const char *httpUsername = "admin";
 unsigned long keyTimer = 0;
@@ -180,9 +177,7 @@ unsigned long wiFiUptimeMillis = 0;
 #include "wsResponses.esp"
 #include "rfid.esp"
 #include "wifi.esp"
-#ifdef ETHERNET
 #include "ethernet.esp"
-#endif
 #include "config.esp"
 #include "websocket.esp"
 #include "webserver.esp"
@@ -202,12 +197,8 @@ void setup()
 #ifdef DEBUG
 	Serial.begin(115200);
 	Serial.println();
-
 	Serial.print(F("[ INFO ] ESP32-ACTL v"));
 	Serial.print(VERSION);
-#ifdef ETHERNET
-	Serial.print(" eth");
-#endif
 #ifdef DEBUG
 	Serial.print(" debug");
 #endif
@@ -292,20 +283,14 @@ void setup()
 	delay(700);
 	io2.setRelay(RELAY2, OFF);
 #endif
-	bool configured = false;
 	configured = loadConfiguration(config);
-#ifdef ETHERNET
-	bool configuredeth = false;
-	configuredeth = configured;
-	eth_connected = false;
-	setupEth(configuredeth);
-
+	// ethernet setup
+	setupEth();
 	config.ipAddressEth = ETH.localIP();
 	config.gatewayIpEth = ETH.gatewayIP();
 	config.subnetIpEth = ETH.subnetMask();
 	config.dnsIpEth = ETH.dnsIP();
 	config.ethmac = ETH.macAddress();
-
 	String linkduplex = "HD";
 	if (ETH.fullDuplex() == true)
 	{
@@ -314,7 +299,7 @@ void setup()
 	char spd[12];
 	sprintf(spd, "%dMbps %s", ETH.linkSpeed(), linkduplex);
 	config.ethlink = (String)spd;
-#endif
+	// other setup
 	setupWifi(configured);
 	setupMqtt();
 	setupWebServer();
@@ -337,7 +322,7 @@ void IRAM_ATTR loop()
 	uptimeSeconds = currentMillis / 1000;
 	previousLoopMillis = currentMillis;
 
-	trySyncNTPtime(10);
+	//trySyncNTPtime(10);
 
 	if (config.openlockpin != 255)
 	{
@@ -364,7 +349,6 @@ void IRAM_ATTR loop()
 	}
 
 	// relay
-
 	for (int currentRelay = 0; currentRelay < config.numRelays; currentRelay++)
 	{
 		if (config.lockType[currentRelay] == LOCKTYPE_CONTINUOUS) // Continuous relay mode

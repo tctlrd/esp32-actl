@@ -1,22 +1,21 @@
 {
-  "name": "uglifier",
-  "version": "0.0.1",
-  "description": "Combine all js and css files into one and gzip them for the ESP32-RFID project",
-  "main": "unglify.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "gulp"
-  },
-  "author": "ESP32-RFID Developers",
-  "license": "UNLICENSED",
-  "dependencies": {
-    "gulp": "^3.9.1",
-    "gulp-concat": "^2.6.1",
-    "gulp-flatmap": "^1.0.2",
-    "gulp-gzip": "^1.4.2",
-    "gulp-htmlmin": "^4.0.0",
-    "gulp-uglify": "^3.0.1",
-    "pump": "^3.0.0"
-  },
-  "bin": "node_modules\\gulp\\bin\\gulp.js"
+    "name": "webfilesbuilder",
+    "version": "1.1.0",
+    "description": "Combine all js and css files into one and gzip them for the esp32-actl project",
+    "scripts": {
+        "start": "gulp"
+    },
+    "author": "tctlrd",
+    "license": "UNLICENSED",
+    "dependencies": {
+        "bootstrap": "^5.3.3",
+        "bootstrap-icons": "^1.11.3",
+        "fs-extra": "^11.3.0",
+        "gulp": "^5.0.0",
+        "gulp-concat": "^2.6.1",
+        "gulp-flatmap": "^1.0.2",
+        "gulp-htmlmin": "^5.0.1",
+        "gulp-uglify": "^3.0.2",
+        "jquery": "^3.7.1"
+    }
 }

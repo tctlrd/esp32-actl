@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>WebSocket Test</title>
+</head>
+
+<body>
+    <h1>WebSocket Test</h1>
+    <script>
+        const ws = new WebSocket('ws://192.168.0.22');
+
+        ws.onopen = function () {
+            console.log("[INFO] Connected to WebSocket server");
+        };
+
+        ws.onmessage = function (event) {
+            console.log("[INFO] Message from server:", event.data);
+            try {
+                const data = JSON.parse(event.data);
+                console.log("[INFO] Parsed data:", data);
+            } catch (e) {
+                console.error("[ERROR] Failed to parse message:", e);
+            }
+        };
+
+        ws.onerror = function (error) {
+            console.error("[ERROR] WebSocket error:", error);
+        };
+
+        ws.onclose = function () {
+            console.log("[INFO] WebSocket connection closed");
+        };
+
+        // Function to send a command to the WebSocket server
+        function sendCommand(command) {
+            if (ws.readyState === WebSocket.OPEN) {
+                console.log("[INFO] Sending command:", command);
+                ws.send(JSON.stringify(command));
+            } else {
+                console.error("[ERROR] WebSocket is not open");
+            }
+        }
+
+        // Example usage to run from the console
+        // sendCommand({ command: "status" });
+    </script>
+</body>
+
+</html>

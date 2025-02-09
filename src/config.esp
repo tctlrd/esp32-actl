@@ -3,6 +3,8 @@ bool loadConfiguration(Config &config)
 	File configFile = LittleFS.open("/config.json", "r");
 	if (!configFile)
 	{
+		File configFile = LittleFS.open("/config.json", "w");
+		configFile.close();
 #ifdef DEBUG
 		Serial.println(F("[ WARN ] Failed to open config file!"));
 #endif
@@ -303,7 +305,6 @@ bool loadConfiguration(Config &config)
 		config.dnsIp.fromString(network["dns"].as<String>().c_str());
 	}
 
-#ifdef ETHERNET
 	// Check if DHCP is enabled for Ethernet
 	config.dhcpEnabledEth = network["dhcpeth"] == 1;
 
@@ -334,7 +335,6 @@ bool loadConfiguration(Config &config)
 		// Convert the DNS IP address string to an IP address
 		config.dnsIpEth.fromString(network["dnseth"].as<const char *>());
 	}
-#endif
 
 	const char *apipch;
 	if (config.wifiApIp)

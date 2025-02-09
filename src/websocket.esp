@@ -1,7 +1,5 @@
 #define MAX_WS_BUFFER 2048
 
-char wsBuffer[MAX_WS_BUFFER];
-
 struct WsMessage
 {
 	char *serializedMessage;
@@ -41,7 +39,6 @@ void addWsMessageToQueue(AsyncWebSocketClient *client, int messageSize)
 void processWsMessage(WsMessage *incomingMessage)
 {
 	// We should always get a JSON object (stringfied) from browser, so parse it
-	// DynamicJsonDocument root(2448);
 	JsonDocument root;
 	AsyncWebSocketClient *client = incomingMessage->client;
 	// cast to const char * to avoid in-place editing of serializedMessage
@@ -219,8 +216,9 @@ void processWsMessage(WsMessage *incomingMessage)
 		lastNTPepoch = t;
 		sendTime(client);
 	}
-	else if (strcmp(command, "getconf") == 0)
+	else if (strcmp(command, "getconf") == 0 && configured)
 	{
+		Serial.println(F("[ WARN ] getconf executing"));
 		File configFile = LittleFS.open("/config.json", "r");
 		if (configFile)
 		{
@@ -234,6 +232,7 @@ void processWsMessage(WsMessage *incomingMessage)
 			configFile.close();
 		}
 	}
+	
 	free(incomingMessage->serializedMessage);
 	free(incomingMessage);
 	yield();

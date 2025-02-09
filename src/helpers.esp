@@ -1,6 +1,6 @@
-String printIP(IPAddress adress)
+String printIP(IPAddress address)
 {
-	return adress.toString();
+	return address.toString();
 }
 
 void parseBytes(const char *str, char sep, byte *bytes, int maxBytes, int base)

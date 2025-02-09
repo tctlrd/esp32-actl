@@ -1,267 +1,121 @@
-var gulp = require('gulp');
-var fs = require('fs');
-var concat = require('gulp-concat');
-var gzip = require('gulp-gzip');
-var flatmap = require('gulp-flatmap');
-var path = require('path');
-var htmlmin = require('gulp-htmlmin');
-var uglify = require('gulp-uglify');
-var pump = require('pump');
+const gulp = require('gulp');
+const fs = require('fs-extra');
+const zlib = require('zlib');
+const concat = require('gulp-concat');
+const path = require('path');
+const htmlmin = require('gulp-htmlmin');
+const uglify = require('gulp-uglify');
+const websrc = '../../src/websrc/';
+const webh = `../../src/webh/`;
+const tpDir = `${websrc}3rdparty/`;
+const prDir = `${websrc}process/`;
+const uiDir = `${websrc}ui/`;
+const mnDir = `${prDir}mini/`;
+const fnDir = `${prDir}final/`;
+const gzDir = `${prDir}gzip/`;
+const directories = [
+    websrc,
+    webh,
+    tpDir,
+    prDir,
+    uiDir,
+    mnDir,
+    fnDir,
+    gzDir
+];
+const mn = 'required';
 
-function espRfidJsMinify (cb) {
-    return pump([
-        gulp.src('../../src/websrc/js/esprfid.js'),
-        uglify(),
-        gulp.dest('../../src/websrc/gzipped/js/'),
-    ] );
-}
-
-function espRfidJsGz() {
-    return gulp.src("../../src/websrc/gzipped/js/esprfid.js")
-        .pipe(gzip({
-            append: true
-        }))
-    .pipe(gulp.dest('../../src/websrc/gzipped/js/'));
-}
-
-function espRfidJsGzh(cb) {
-    var source = "../../src/websrc/gzipped/js/" + "esprfid.js.gz";
-    var destination = "../../src/webh/" + "esprfid.js.gz.h";
- 
-    var wstream = fs.createWriteStream(destination);
-    wstream.on('error', function (err) {
-        console.log(err);
+// Recreate output directories (destructive)
+const ensureDirs = (cb) => {
+    console.log('RECREAT OUTPUT DIRECTORIES (destructive of: webh & process)');
+    fs.removeSync(webh);
+    fs.removeSync(prDir);
+    directories.forEach(dir => {
+        fs.ensureDirSync(dir);
     });
- 
-    var data = fs.readFileSync(source);
- 
-    wstream.write('#define esprfid_js_gz_len ' + data.length + '\n');
-    wstream.write('const uint8_t esprfid_js_gz[] PROGMEM = {')
- 
-    for (i=0; i<data.length; i++) {
-        if (i % 1000 == 0) wstream.write("\n");
-        wstream.write('0x' + ('00' + data[i].toString(16)).slice(-2));
-        if (i<data.length-1) wstream.write(',');
-    }
- 
-    wstream.write('\n};')
-    wstream.end();
+    cb();
+};
+
+// Minify JavaScript files
+function minify(srcFolder, destFolder) {
+    return gulp.src(`${srcFolder}*.js`).pipe(uglify()).pipe(gulp.dest(destFolder));
+}
+
+// Concat files into a single file.
+function merge(srcFolder, fileType, destDir, outputFile) {
+    return gulp.src(`${srcFolder}*.${fileType}`).pipe(concat({
+        path: outputFile,
+        stat: {
+            mode: 0o666
+        }
+    })).pipe(gulp.dest(destDir));
+}
+
+// Gzip files
+function gzip(srcFile, destFile, cb) {
+    const input = fs.readFileSync(srcFile);
+    const output = zlib.gzipSync(input);
+    fs.writeFileSync(destFile, output);
     cb();
 }
 
-function BoardsJsMinify (cb) {
-    return pump([
-        gulp.src('../../src/websrc/js/boards.js'),
-        uglify(),
-        gulp.dest('../../src/websrc/gzipped/js/'),
-    ] );
-}
-
-function BoardsJsGz() {
-    return gulp.src("../../src/websrc/gzipped/js/boards.js")
-        .pipe(gzip({
-            append: true
-        }))
-    .pipe(gulp.dest('../../src/websrc/gzipped/js/'));
-}
-
-function BoardsJsGzh(cb) {
-    var source = "../../src/websrc/gzipped/js/" + "boards.js.gz";
-    var destination = "../../src/webh/" + "boards.js.gz.h";
- 
-    var wstream = fs.createWriteStream(destination);
-    wstream.on('error', function (err) {
-        console.log(err);
-    });
- 
-    var data = fs.readFileSync(source);
- 
-    wstream.write('#define boards_js_gz_len ' + data.length + '\n');
-    wstream.write('const uint8_t boards_js_gz[] PROGMEM = {')
- 
-    for (i=0; i<data.length; i++) {
-        if (i % 1000 == 0) wstream.write("\n");
-        wstream.write('0x' + ('00' + data[i].toString(16)).slice(-2));
-        if (i<data.length-1) wstream.write(',');
+// Create byte arrays of gzipped files
+function byteArray(source, destination, name, cb) {
+    const arrayName = name.replace(/\.|-/g, "_");
+    const data = fs.readFileSync(source);
+    const wstream = fs.createWriteStream(destination);
+    wstream.write(`#define ${arrayName}_len ${data.length}\n`);
+    wstream.write(`const uint8_t ${arrayName}[] PROGMEM = {`);
+    for (let i = 0; i < data.length; i++) {
+        if (i % 1000 === 0)
+            wstream.write('\n');
+        wstream.write('0x' + data[i].toString(16).padStart(2, '0') + (i < data.length - 1 ? ',' : ''));
     }
- 
-    wstream.write('\n};')
-    wstream.end();
-    cb();
+    wstream.write('\n};');
+    wstream.end(cb);
 }
 
-function scriptsConcat() {
-    return gulp.src([
-            '../../src/websrc/3rdparty/js/jquery-1.12.4.min.js',
-            '../../src/websrc/3rdparty/js/bootstrap-3.3.7.min.js',
-            '../../src/websrc/3rdparty/js/footable-3.1.6.min.js',
-        ])
-        .pipe(concat({
-            path: 'required.js',
-            stat: {
-                mode: 0666
-            }
-        }))
-        .pipe(gulp.dest('../../src/websrc/js/'))
-        .pipe(gzip({
-           append: true
-        }))
-        .pipe(gulp.dest('../../src/websrc/gzipped/js/'));
-}
+// Task: Process assets (scripts, UI scripts, HTML, styles, fonts)
+const process = (cb) => {
+    console.log('PROCESS UI & 3RDPARTY FILES TO FINAL: minify, merge, copy');
+    const mergeJS = () => merge(`${tpDir}js/`, 'js', `${fnDir}`, `${mn}.js`);
+    const mergeCSS = () => merge(`${tpDir}css/`, 'css', `${fnDir}`, `${mn}.css`);
+    const minifyUIjs = () => minify(`${uiDir}`, `${fnDir}`);
+    const minifyUIhtml = () => gulp.src(`${uiDir}*.htm*`).pipe(htmlmin({ collapseWhitespace: true, minifyJS: true }).on('error', console.error)).pipe(gulp.dest(`${fnDir}`));
+    const copyFonts = (cb) => { fs.copy(`${tpDir}fonts/`, `${fnDir}`, cb); };
+    gulp.parallel(mergeJS, minifyUIjs, minifyUIhtml, mergeCSS, copyFonts)(cb);
+};
 
-function scripts(cb) {
-    var source = "../../src/websrc/gzipped/js/" + "required.js.gz";
-    var destination = "../../src/webh/" + "required.js.gz.h";
- 
-    var wstream = fs.createWriteStream(destination);
-    wstream.on('error', function (err) {
-        console.log(err);
+// Task: Gzip files
+function gzipAll(cb) {
+    console.log('GZIP FROM FINAL');
+    const files = fs.readdirSync(fnDir);
+    const tasks = files.map((file) => {
+        const srcFile = path.join(fnDir, file);
+        const destFile = path.join(gzDir, file + '.gz');
+        const taskName = (done) => gzip(srcFile, destFile, done);
+        Object.defineProperty(taskName, 'name', { value: `${file}.gz` });
+        return taskName;
     });
- 
-    var data = fs.readFileSync(source);
- 
-    wstream.write('#define required_js_gz_len ' + data.length + '\n');
-    wstream.write('const uint8_t required_js_gz[] PROGMEM = {')
- 
-    for (i=0; i<data.length; i++) {
-        if (i % 1000 == 0) wstream.write("\n");
-        wstream.write('0x' + ('00' + data[i].toString(16)).slice(-2));
-        if (i<data.length-1) wstream.write(',');
-    }
- 
-    wstream.write('\n};')
-    wstream.end();
-    cb();
+    gulp.parallel(...tasks)(cb);
 }
 
-function stylesConcat() {
-    return gulp.src([
-            '../../src/websrc/3rdparty/css/bootstrap-3.3.7.min.css',
-            '../../src/websrc/3rdparty/css/footable.bootstrap-3.1.6.min.css',
-            '../../src/websrc/3rdparty/css/sidebar.css',
-        ])
-        .pipe(concat({
-            path: 'required.css',
-            stat: {
-                mode: 0666
-            }
-        }))
-        .pipe(gulp.dest('../../src/websrc/css/'))
-        .pipe(gzip({
-            append: true
-        }))
-        .pipe(gulp.dest('../../src/websrc/gzipped/css/'));
-}
-
-function styles(cb) {
-    var source = "../../src/websrc/gzipped/css/" + "required.css.gz";
-    var destination = "../../src/webh/" + "required.css.gz.h";
- 
-    var wstream = fs.createWriteStream(destination);
-    wstream.on('error', function (err) {
-        console.log(err);
+// Task: Create byte arrays from gzipped files
+function byteArrayAll(cb) {
+    console.log('BYTE ARRAY FROM GZIP');
+    const files = fs.readdirSync(gzDir);
+    const tasks = files.map(file => {
+        const srcFile = path.join(gzDir, file);
+        const destFile = `${webh}${file}.h`;
+        const taskName = (done) => byteArray(srcFile, destFile, file, done);
+        Object.defineProperty(taskName, 'name', { value: `${file}.h` });
+        return taskName;
     });
- 
-    var data = fs.readFileSync(source);
- 
-    wstream.write('#define required_css_gz_len ' + data.length + '\n');
-    wstream.write('const uint8_t required_css_gz[] PROGMEM = {')
- 
-    for (i=0; i<data.length; i++) {
-        if (i % 1000 == 0) wstream.write("\n");
-        wstream.write('0x' + ('00' + data[i].toString(16)).slice(-2));
-        if (i<data.length-1) wstream.write(',');
-    }
- 
-    wstream.write('\n};')
-    wstream.end();
-    cb();	
+    gulp.parallel(...tasks)(cb);
 }
 
-function fontgz() {
-	return gulp.src("../../src/websrc/3rdparty/fonts/*.*")
-        .pipe(gulp.dest("../../src/websrc/fonts/"))
-            .pipe(gzip({
-                append: true
-            }))
-        .pipe(gulp.dest('../../src/websrc/gzipped/fonts/'));
+// Main runner function
+function runner(cb) {
+    gulp.series(ensureDirs, process, gzipAll, byteArrayAll)(cb);
 }
-
-function fonts() {
-    return gulp.src("../../src/websrc/gzipped/fonts/*.*")
-        .pipe(flatmap(function(stream, file) {
-			var filename = path.basename(file.path);
-            var wstream = fs.createWriteStream("../../src/webh/" + filename + ".h");
-            wstream.on("error", function(err) {
-                gutil.log(err);
-            });
-			var data = file.contents;
-            wstream.write("#define " + filename.replace(/\.|-/g, "_") + "_len " + data.length + "\n");
-            wstream.write("const uint8_t " + filename.replace(/\.|-/g, "_") + "[] PROGMEM = {")
-            
-            for (i = 0; i < data.length; i++) {
-                if (i % 1000 == 0) wstream.write("\n");
-                wstream.write('0x' + ('00' + data[i].toString(16)).slice(-2));
-                if (i < data.length - 1) wstream.write(',');
-            }
-
-            wstream.write("\n};")
-            wstream.end();
-
-            return stream;
-        }));
-}
-
-function htmlsPrep() {
-    return gulp.src('../../src/websrc/*.htm*')
-        .pipe(htmlmin({collapseWhitespace: true, minifyJS: true}))
-        .pipe(gulp.dest('../../src/websrc/gzipped/'))
-        .pipe(gzip({
-            append: true
-        }))
-        .pipe(gulp.dest('../../src/websrc/gzipped/'));
-}
-
-function htmlsGz() {
-    return gulp.src("../../src/websrc/*.htm*")
-        .pipe(gzip({
-            append: true
-        }))
-    .pipe(gulp.dest('../../src/websrc/gzipped/'));
-}
-
-function htmls() {
-    return gulp.src("../../src/websrc/gzipped/*.gz")
-        .pipe(flatmap(function(stream, file) {
-            var filename = path.basename(file.path);
-            var wstream = fs.createWriteStream("../../src/webh/" + filename + ".h");
-            wstream.on("error", function(err) {
-                gutil.log(err);
-            });
-            var data = file.contents;
-            wstream.write("#define " + filename.replace(/\.|-/g, "_") + "_len " + data.length + "\n");
-            wstream.write("const uint8_t " + filename.replace(/\.|-/g, "_") + "[] PROGMEM = {")
-            
-            for (i = 0; i < data.length; i++) {
-                if (i % 1000 == 0) wstream.write("\n");
-                wstream.write('0x' + ('00' + data[i].toString(16)).slice(-2));
-                if (i < data.length - 1) wstream.write(',');
-            }
-
-            wstream.write("\n};")
-            wstream.end();
-
-            return stream;
-        }));
-}
-
-async function runner() {
-    const scriptTasks = gulp.series(espRfidJsMinify, espRfidJsGz, espRfidJsGzh, BoardsJsMinify, BoardsJsGz, BoardsJsGzh, scriptsConcat, scripts);
-    const styleTasks = gulp.series(stylesConcat, styles);
-    const fontTasks = gulp.series(fontgz, fonts);
-    const htmlTasks = gulp.series(htmlsGz, htmlsPrep, htmls);
-    const parallel = await gulp.parallel(scriptTasks, styleTasks, fontTasks, htmlTasks);
-    return await parallel();
-}
-
 exports.default = runner;

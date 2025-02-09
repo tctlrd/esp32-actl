@@ -2,7 +2,6 @@ void extern mqttPublishEvent(JsonDocument *root);
 
 void writeEvent(String type, String src, String desc, String data)
 {
-	// DynamicJsonDocument root(512);
 	JsonDocument root;
 	root["type"] = type;
 	root["src"] = src;
@@ -29,7 +28,6 @@ void writeEvent(String type, String src, String desc, String data)
 
 void writeLatest(String uid, String username, int acctype, int access = ACCESS_GRANTED)
 {
-	// DynamicJsonDocument root(512);
 	JsonDocument root;
 	root["uid"] = uid;
 	root["username"] = username;
@@ -113,7 +111,7 @@ void sendLogFile(int page, String fileName, int logFileType, AsyncWebSocketClien
 	AsyncWebSocketMessageBuffer *buffer = ws.makeBuffer(len);
 	if (buffer)
 	{
-		serializeJson(root, (char *)buffer->get(), len + 1);
+		serializeJson(root, (char *)buffer->get(), len);
 		client->text(buffer);
 		if (logFileType == LOGTYPE_EVENTLOG)
 			client->text("{\"command\":\"result\",\"resultof\":\"eventlist\",\"result\": true}");
@@ -266,7 +264,7 @@ void sendFileList(int page, AsyncWebSocketClient *client)
 	AsyncWebSocketMessageBuffer *buffer = ws.makeBuffer(len);
 	if (buffer)
 	{
-		serializeJson(root, (char *)buffer->get(), len + 1);
+		serializeJson(root, (char *)buffer->get(), len);
 		client->text(buffer);
 		client->text("{\"command\":\"result\",\"resultof\":\"listfiles\",\"result\": true}");
 	}
