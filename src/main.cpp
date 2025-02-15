@@ -48,18 +48,26 @@ IO2 io2 = IO2(); // set I2C address of MOD-IO2
 #include <Bounce2.h>
 #include <Desfire.h>
 #include "Secrets.h"
-#include <PN532.h>
 // #include <esp_task_wdt.h>
 #include <Update.h>
 #include "magicnumbers.h"
 #include "config.h"
 
-#include <WiegandNG.h>
-
 Config config;
+
+#include <MFRC522.h>
+#include "PN532.h"
+#include <Wiegand.h>
+#include "rfid125kHz.h"
+#include <SoftwareSerial.h>
+
 File fsUploadFile;
-WiegandNG wg;
 Desfire desfire;
+MFRC522 mfrc522 = MFRC522();
+PN532 pn532;
+WIEGAND wg;
+RFID_Reader RFIDr;
+SoftwareSerial *rdm6300SwSerial = NULL;
 
 // relay specific variables
 #if MAX_NUM_RELAYS == 4
