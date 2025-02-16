@@ -526,14 +526,14 @@ function inProgress(callback) {
         if (i === 101) {
           clearInterval(prg);
           var a = document.createElement("a");
-          a.href = "http://" + config.general.hostnm + ".local";
+          a.href = "http://" + window.location.host;
           a.innerText = "Try to reconnect ESP";
           document.getElementById("reconnect").appendChild(a);
           document.getElementById("reconnect").style.display = "block";
           document.getElementById("updateprog").className = "progress-bar progress-bar-success";
           document.getElementById("updateprog").innerHTML = "Completed";
         }
-      }, 500);
+      }, 50);
       switch (callback) {
         case "upload":
           $.ajax({
@@ -1648,7 +1648,6 @@ function restartESP() {
 
 function socketMessageListener(evt) {
   var obj = JSON.parse(evt.data);
-  console.log("[ DEBUG ] Received WebSocket Message:", obj);
   if (obj.hasOwnProperty("command")) {
     switch (obj.command) {
       case "status":
@@ -1670,7 +1669,6 @@ function socketMessageListener(evt) {
         break;
       case "eventlist":
         haspages = obj.haspages;
-        console.log("[ DEBUG ] Event list received:", obj);
         if (haspages === 0) {
           document.getElementById("loading-img").style.display = "none";
           initEventTable();
@@ -1755,7 +1753,6 @@ function socketMessageListener(evt) {
         }
         break;
       case "eventlist":
-        console.log("[ DEBUG ] Event list result:", obj);
         document.getElementById("saveeventlogbtn").disabled = true;
         document.getElementById("cleareventlogbtn").disabled = true;
         if (page < haspages && obj.result === true) {
