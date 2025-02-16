@@ -6,6 +6,8 @@ var utcSeconds;
 var data = [];
 var ft;
 var ajaxobj;
+const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
+const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl))
 
 var maxNumRelays = 4;
 var numRelays = 1;
@@ -2454,10 +2456,6 @@ function start() {
         backdrop: "static",
         keyboard: false
       }).modal('show');
-      $("[data-toggle=\"popover\"]").popover({
-        container: "body"
-      });
-
     }
   });
 }
