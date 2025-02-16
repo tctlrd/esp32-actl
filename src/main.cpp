@@ -44,7 +44,6 @@ Config config;
 #include "rfid125kHz.h"
 #include <SoftwareSerial.h>
 
-File fsUploadFile;
 Desfire desfire;
 MFRC522 mfrc522 = MFRC522();
 PN532 pn532;
@@ -77,7 +76,6 @@ bool deactivateRelay[MAX_NUM_RELAYS] = {false};
 
 // these are from us which can be updated and changed
 #include "webh/esprfid.js.gz.h"
-#include "webh/boards.js.gz.h"
 #include "webh/esprfid.htm.gz.h"
 #include "webh/index.html.gz.h"
 
@@ -178,10 +176,7 @@ void setup()
 	Serial.printf("Flash real size: %u\n\n", realSize);
 	Serial.printf("Flash ide  size: %u\n", ideSize);
 	Serial.printf("Flash ide speed: %u\n", ESP.getFlashChipSpeed());
-	Serial.printf("Flash ide mode:  %s\n", (ideMode == FM_QIO ? "QIO" : ideMode == FM_QOUT ? "QOUT"
-																	: ideMode == FM_DIO	   ? "DIO"
-																	: ideMode == FM_DOUT   ? "DOUT"
-																						   : "UNKNOWN"));
+	Serial.printf("Flash ide mode:  %s\n", (ideMode == FM_QIO ? "QIO" : ideMode == FM_QOUT ? "QOUT" : ideMode == FM_DIO	? "DIO" : ideMode == FM_DOUT   ? "DOUT" : "UNKNOWN"));
 	if (ideSize != realSize)
 	{
 		Serial.println(F("Flash Chip configuration wrong!\n"));
