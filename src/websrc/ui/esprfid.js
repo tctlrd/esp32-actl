@@ -29,7 +29,7 @@ var config = {
     "apip": "192.168.4.1",
     "apsubnet": "255.255.255.0",
     "fallbackmode": 0,
-    "dhcpeth": 1,
+    "dhcpeth": 0,
     "ipeth": "",
     "subneteth": "",
     "gatewayeth": "",
@@ -39,6 +39,9 @@ var config = {
     "readertype": 1,
     "wgd0pin": 4,
     "wgd1pin": 5,
+    "rdm6300pin": 4,
+    "sspin": 0,
+    "rfidgain": 32,
     "wifipin": 255,
     "rtype": 1,
     "ltype": 0,
@@ -161,21 +164,40 @@ function syncBrowserTime() {
 
 function handleReader() {
   var rType = parseInt(document.getElementById("readertype").value);
-  if (rType === 0 || rType === 4) {
+  if (rType === 0) {
     document.getElementById("wiegandForm").style.display = "none";
     document.getElementById("mfrc522Form").style.display = "block";
     document.getElementById("rc522gain").style.display = "block";
-  } else if (rType === 1 || rType === 5) {
+    document.getElementById("rdm6300").style.display = "none";
+  } else if (rType === 1) {
     document.getElementById("wiegandForm").style.display = "block";
     document.getElementById("mfrc522Form").style.display = "none";
-  } else if (rType === 2 || rType === 6) {
+    document.getElementById("rdm6300").style.display = "none";
+  } else if (rType === 2) {
     document.getElementById("wiegandForm").style.display = "none";
     document.getElementById("mfrc522Form").style.display = "block";
     document.getElementById("rc522gain").style.display = "none";
+    document.getElementById("rdm6300").style.display = "none";
   } else if (rType === 3) {
     document.getElementById("wiegandForm").style.display = "none";
     document.getElementById("mfrc522Form").style.display = "none";
     document.getElementById("rc522gain").style.display = "none";
+    document.getElementById("rdm6300").style.display = "block";
+  } else if (rType === 4) {
+    document.getElementById("wiegandForm").style.display = "none";
+    document.getElementById("mfrc522Form").style.display = "block";
+    document.getElementById("rc522gain").style.display = "none";
+    document.getElementById("rdm6300").style.display = "block";
+  } else if (rType === 5) {
+    document.getElementById("wiegandForm").style.display = "block";
+    document.getElementById("mfrc522Form").style.display = "none";
+    document.getElementById("rc522gain").style.display = "none";
+    document.getElementById("rdm6300").style.display = "block";
+  } else if (rType === 6) {
+    document.getElementById("wiegandForm").style.display = "none";
+    document.getElementById("mfrc522Form").style.display = "block";
+    document.getElementById("rc522gain").style.display = "none";
+    document.getElementById("rdm6300").style.display = "block";
   }
 }
 
@@ -207,9 +229,11 @@ function listhardware() {
   document.getElementById("ledwaitingpin").value = config.hardware.ledwaitingpin;
   document.getElementById("beeperpin").value = config.hardware.beeperpin;
   document.getElementById("readertype").value = config.hardware.readertype;
-  document.getElementById("wiegandbits").value = config.hardware.wiegandbits;
   document.getElementById("wg0pin").value = config.hardware.wgd0pin;
   document.getElementById("wg1pin").value = config.hardware.wgd1pin;
+  document.getElementById("rdm6300pin").value = config.hardware.rdm6300pin;
+  document.getElementById("gpioss").value = config.hardware.sspin;
+  document.getElementById("gain").value = config.hardware.rfidgain;
   document.getElementById("gpiorly").value = config.hardware.rpin;
   document.getElementById("doorname").value = config.hardware.doorname || "";
   document.getElementById("numrlys").value = numRelays;
@@ -261,13 +285,15 @@ function uncommited() {
 
 function savehardware() {
   config.hardware.readertype = parseInt(document.getElementById("readertype").value);
-  config.hardware.wiegandbits = parseInt(document.getElementById("wiegandbits").value);
   config.hardware.wgd0pin = parseInt(document.getElementById("wg0pin").value);
   config.hardware.wgd1pin = parseInt(document.getElementById("wg1pin").value);
+  config.hardware.rdm6300pin = parseInt(document.getElementById("rdm6300pin").value);
   config.hardware.useridstoragemode = document.getElementById("useridstoragemode").value;
   config.hardware.requirepincodeafterrfid = document.getElementById("requirepincodeafterrfid").checked;
   config.hardware.allowpincodeonly = document.getElementById("allowpincodeonly").checked;
   config.hardware.removeparitybits = document.getElementById("removeparitybits").checked;
+  config.hardware.sspin = parseInt(document.getElementById("gpioss").value);
+  config.hardware.rfidgain = parseInt(document.getElementById("gain").value);
   config.hardware.rtype = parseInt(document.getElementById("typerly").value);
   config.hardware.ltype = parseInt(document.getElementById("lockType").value);
   config.hardware.rpin = parseInt(document.getElementById("gpiorly").value);
@@ -500,7 +526,7 @@ function inProgress(callback) {
         if (i === 101) {
           clearInterval(prg);
           var a = document.createElement("a");
-          a.href = "http://" + config.general.hostnm + ".local";
+          a.href = "http://" + window.location.host;
           a.innerText = "Try to reconnect ESP";
           document.getElementById("reconnect").appendChild(a);
           document.getElementById("reconnect").style.display = "block";
@@ -964,7 +990,7 @@ function getContent(contentname) {
         default:
           break;
       }
-      $("[data-toggle=\"popover\"]").popover({
+      $("[data-bs-toggle=\"popover\"]").popover({
         container: "body"
       });
       $(this).hide().fadeIn();
@@ -983,11 +1009,11 @@ function backupuser() {
 }
 
 function backupset() {
-  saveLogfile(config, "downloadSet", "esp-rfid-settings.json")
+  saveLogfile(config, "downloadSet", "esp32-actl-settings.json")
 }
 
 function piccBackup(obj) {
-  saveLogfile(obj, "downloadUser", "esp-rfid-users.json")
+  saveLogfile(obj, "downloadUser", "esp32-actl-users.json")
   backupstarted = false;
 }
 
@@ -1060,7 +1086,7 @@ function restoreUser() {
           alert("Not a valid backup file");
           return;
         }
-        if (json.type === "esp-rfid-userbackup") {
+        if (json.type === "esp32-actl-userbackup") {
           var x = confirm("File seems to be valid, do you wish to continue?");
           if (x) {
             recordstorestore = json.list.length;
@@ -1370,6 +1396,7 @@ function initLatestLogTable() {
 
 function initUserTable() {
   updateUserModalForm();
+  var ft;
   jQuery(function ($) {
     var $modal = $("#editor-modal"),
       $editor = $("#editor"),
@@ -1605,12 +1632,12 @@ function initUserTable() {
   });
 
   ft = FooTable.get('#usertable');
-  for (var i = 2; i <= maxNumRelays; i++) {
-    if (i <= numRelays) {
-      ft.columns.get("acctype" + i).visible = true;
-    }
-    else {
-      ft.columns.get("acctype" + i).visible = false;
+  if (ft) {
+    for (var i = 2; i <= maxNumRelays; i++) {
+      var column = ft.columns.get("acctype" + i);
+      if (column) {
+        column.visible = i <= numRelays;
+      }
     }
     ft.draw();
   }
@@ -1718,7 +1745,7 @@ function socketMessageListener(evt) {
             $(".footable-show").click();
             $(".fooicon-remove").click();
           } else {
-            file.type = "esp-rfid-userbackup";
+            file.type = "esp32-actl-userbackup";
             file.version = "v0.6";
             file.list = data;
             piccBackup(file);
@@ -1804,15 +1831,15 @@ function saveLogfile(obj, anchorElement, filename) {
 }
 
 function saveevent() {
-  file.type = "esp-rfid-eventlog";
+  file.type = "esp32-actl-eventlog";
   file.list = data;
-  saveLogfile(file, "downloadEvent", "esp-rfid-eventlog.json");
+  saveLogfile(file, "downloadEvent", "esp32-actl-eventlog.json");
 }
 
 function savelatest() {
-  file.type = "esp-rfid-accesslog";
+  file.type = "esp32-actl-accesslog";
   file.list = data;
-  saveLogfile(file, "downloadLatest", "esp-rfid-accesslog.json");
+  saveLogfile(file, "downloadLatest", "esp32-actl-accesslog.json");
 }
 
 function clearlatest() {
@@ -2323,24 +2350,24 @@ function keepWSConnectionOpen() {
 }
 
 function connectWS() {
-  if(wsConnectionPresent) {
+  if (wsConnectionPresent) {
     return;
   }
 
   if (window.location.protocol === "https:") {
     wsUri = "wss://" + window.location.hostname + ":" + window.location.port + "/ws";
   } else if (window.location.protocol === "file:" ||
-      ["0.0.0.0", "localhost", "127.0.0.1"].includes(window.location.hostname)) {
+    ["0.0.0.0", "localhost", "127.0.0.1"].includes(window.location.hostname)) {
     wsUri = "ws://localhost:8080/ws";
   }
   websock = new WebSocket(wsUri);
   websock.addEventListener("message", socketMessageListener);
 
-  websock.onopen = function(evt) {
+  websock.onopen = function (evt) {
     wsConnectionActive();
   };
 
-  websock.onclose = function(evt) {
+  websock.onclose = function (evt) {
     wsConnectionClosed();
   };
 
@@ -2418,22 +2445,26 @@ function start() {
   esprfidcontent.id = "mastercontent";
   esprfidcontent.style.display = "none";
   document.body.appendChild(esprfidcontent);
-  $("#signin").on("shown.bs.modal", function() {
+  $("#signin").on("shown.bs.modal", function () {
     $("#password").focus().select();
   });
-  $("#mastercontent").load("esprfid.htm", function(responseTxt, statusTxt, xhr) {
+  $("#mastercontent").load("esprfid.htm", function (responseTxt, statusTxt, xhr) {
     if (statusTxt === "success") {
       $("#signin").modal({
         backdrop: "static",
         keyboard: false
       }).modal('show');
-      $("[data-toggle=\"popover\"]").popover({
+      $("[data-bs-toggle=\"popover\"]").popover({
         container: "body"
       });
-
     }
   });
 }
 
 document.addEventListener("touchstart", handleTouchStart, false);
 document.addEventListener("touchmove", handleTouchMove, false);
+
+document.addEventListener('DOMContentLoaded', function () {
+  const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]');
+  const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl));
+});

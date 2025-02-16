@@ -360,8 +360,8 @@ void mqttPublishAccess(time_t accesstime, String const &isknown, String const &t
 void mqttPublishAccess(time_t accesstime, String const &isknown, int types[MAX_NUM_RELAYS], String const &user, String const &uid, String const &pincode)
 {
 	JsonDocument root;
-	JsonArray access = root["access"] = JsonArray();
-	JsonArray doorNames = root["doorName"] = JsonArray();
+	JsonArray access = root["access"].to<JsonArray>();
+	JsonArray doorNames = root["doorName"].to<JsonArray>();
 	if (config.mqttEvents)
 	{
 		root["cmd"] = "log";
@@ -436,7 +436,7 @@ void onMqttPublish(uint16_t packetId)
 void getUserList()
 {
 	JsonDocument root;
-	JsonArray users = root["list"] = JsonArray();
+	JsonArray users = root["list"].to<JsonArray>();
 	File dir = LittleFS.open("/P/");
 #ifdef DEBUG
 	Serial.println("[ INFO ] getUserList");

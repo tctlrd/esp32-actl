@@ -8,20 +8,26 @@
         rel="icon" type="image/x-icon" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <meta name="description" content="esp32-actl">
+    <meta name="description" content="physical access-control controller powered by ESP32">
     <meta name="author" content="tctlrd">
-    <title id="title">esp32-actl</title>
+    <title id="title">ESP32-ACTL</title>
     <!-- Bootstrap core CSS -->
     <link href="css/required.css" rel="stylesheet">
     <style>
-        #openinghours th, #openinghours2 th {
+        #openinghours th,
+        #openinghours2 th {
             text-align: center;
         }
-        #openinghours td, #openinghours2 td {
+
+        #openinghours td,
+        #openinghours2 td {
             padding: 2px;
         }
-        #openinghours td:nth-child(2n), #openinghours th:nth-child(2n),
-        #openinghours2 td:nth-child(2n), #openinghours2 th:nth-child(2n) {
+
+        #openinghours td:nth-child(2n),
+        #openinghours th:nth-child(2n),
+        #openinghours2 td:nth-child(2n),
+        #openinghours2 th:nth-child(2n) {
             background-color: #bbb;
         }
     </style>
@@ -43,7 +49,8 @@
                     <a href="#" id="status"><i class="bi bi-info-circle"></i>Status</a>
                 </li>
                 <li id="lisettings">
-                    <a href="#homeSubmenu" data-bs-toggle="collapse" aria-expanded="false"><i class="bi bi-gear"></i>Settings</a>
+                    <a href="#homeSubmenu" data-bs-toggle="collapse" aria-expanded="false"><i
+                            class="bi bi-gear"></i>Settings</a>
                     <ul class="collapse list-unstyled" id="homeSubmenu">
                         <li id="liwifi">
                             <a href="#" id="network"><i class="bi bi-wifi"></i>Wireless Network</a>
@@ -69,7 +76,8 @@
                     <a href="#" id="users"><i class="bi bi-person"></i>Users</a>
                 </li>
                 <li id="lilogs">
-                    <a href="#logsSubmenu" data-bs-toggle="collapse" aria-expanded="false"><i class="bi bi-folder2-open"></i>Logs</a>
+                    <a href="#logsSubmenu" data-bs-toggle="collapse" aria-expanded="false"><i
+                            class="bi bi-folder2-open"></i>Logs</a>
                     <ul class="collapse list-unstyled" id="logsSubmenu">
                         <li id="lilatest">
                             <a href="#" id="latestlog"><i class="bi bi-calendar"></i>Access Log</a>
@@ -83,25 +91,27 @@
                     </ul>
                 </li>
                 <li>
-                    <li id="libackup">
-                        <a href="#" id="backup"><i class="bi bi-save"></i>Backup & Restore</a>
-                    </li>
-                    <li id="lireset">
-                        <a href="#" id="reset"><i class="bi bi-arrow-repeat"></i>Factory Reset</a>
-                    </li>
-                    <li id="liupdate">
-                        <a data-bs-toggle="modal" href="#update"><i class="bi bi-box-arrow-in-up"></i>Update</a>
-                    </li>
+                <li id="libackup">
+                    <a href="#" id="backup"><i class="bi bi-save"></i>Backup & Restore</a>
+                </li>
+                <li id="lireset">
+                    <a href="#" id="reset"><i class="bi bi-arrow-repeat"></i>Factory Reset</a>
+                </li>
+                <li id="liupdate">
+                    <a data-bs-toggle="modal" href="#update"><i class="bi bi-box-arrow-in-up"></i>Update</a>
+                </li>
             </ul>
             <ul class="list-unstyled CTAs">
                 <li>
-                    <a href="https://codeberg.org/tctlrd/esp32-actl" class="download" target="_new">Project's Git Page</a>
+                    <a href="https://codeberg.org/tctlrd/esp32-actl" class="download" target="_new">Project's Git
+                        Page</a>
                 </li>
                 <li>
                     <a href="#" class="article" onclick="logout();">Logout</a>
                 </li>
                 <li class="text-center">
-                    <h6 id="mainver" class="text-center" style="display:inline-flex;"></h6> <h6 id="maindebug" class="text-center" style="padding-left:10px;display:inline-flex;"></h6>
+                    <h6 id="mainver" class="text-center" style="display:inline-flex;"></h6>
+                    <h6 id="maindebug" class="text-center" style="padding-left:10px;display:inline-flex;"></h6>
                 </li>
             </ul>
         </nav>
@@ -111,10 +121,10 @@
                 <i class="bi bi-list"></i>
                 <span>Menu</span>
             </button>
-            <div class="float-right" id="ws-connection-status">
+            <div class="float-end" id="ws-connection-status">
                 <div class="alert alert-warning" role="alert">
                     <i class="bi bi-exclamation-triangle"></i>
-                    <span>Connection with esp32-rfid absent. Reconnecting...</span>
+                    <span>Connection with esp32-actl absent. Reconnecting...</span>
                 </div>
             </div>
             <div id="ajaxcontent">
@@ -132,7 +142,8 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                            <button type="button" onclick="commit();" class="btn btn-success" data-bs-dismiss="modal">Save & Reboot</button>
+                            <button type="button" onclick="commit();" class="btn btn-success"
+                                data-bs-dismiss="modal">Save & Reboot</button>
                         </div>
                     </div>
                 </div>
@@ -150,7 +161,8 @@
                         </div>
                         <div class="modal-body">
                             <h5>
-                                This action <strong>cannot</strong> be undone. This will permanently delete <strong>all the user data, settings and logs.</strong> Please make sure you made a backup first.
+                                This action <strong>cannot</strong> be undone. This will permanently delete <strong>all
+                                    the user data, settings and logs.</strong> Please make sure you made a backup first.
                             </h5>
                             <div style="clear:both;">
                                 <br>
@@ -160,11 +172,13 @@
                                 <br>
                             </div>
                             <p>
-                                <input type="text" class="form-control input-block" id="compare" oninput="compareDestroy()">
+                                <input type="text" class="form-control input-block" id="compare"
+                                    oninput="compareDestroy()">
                             </p>
                         </div>
                         <div class="modal-footer">
-                            <button id="destroybtn" type="button" disabled="" onclick="destroy();" class="btn btn-block btn-danger">I understand the consequences.</button>
+                            <button id="destroybtn" type="button" disabled="" onclick="destroy();"
+                                class="btn btn-block btn-danger">I understand the consequences.</button>
                         </div>
                     </div>
                 </div>
@@ -185,9 +199,12 @@
                                         <form role="form" onsubmit="login(); return false">
                                             <fieldset>
                                                 <div class="form-group">
-                                                    <input id="password" class="form-control" placeholder="Password" name="password" type="password" value="" required="" title="Please enter your password">
+                                                    <input id="password" class="form-control" placeholder="Password"
+                                                        name="password" type="password" value="" required=""
+                                                        title="Please enter your password">
                                                 </div>
-                                                <button type="submit" class="btn btn-success btn-md float-right">Login</button>
+                                                <button type="submit"
+                                                    class="btn btn-success btn-md float-end">Login</button>
                                             </fieldset>
                                         </form>
                                     </div>
@@ -217,8 +234,8 @@
                                         <br>
                                     </div>
                                     <!-- <pre id="releasebody">Getting update information from GitHub...</pre> -->
-                                    <div class="float-right">
-                                        <a class="float-right" id="downloadupdate">
+                                    <div class="float-end">
+                                        <a class="float-end" id="downloadupdate">
                                             <button type="button" class="btn btn-primary">Download</button>
                                         </a>
                                     </div>
@@ -231,10 +248,12 @@
                                 <h4>Current Version:</h4>
                                 <h5 id="versionhead"></h5>
                                 <div class="form-group">
-                                    <input id="binform" onchange="allowUpload();" type="file" name="update" accept=".bin">
+                                    <input id="binform" onchange="allowUpload();" type="file" name="update"
+                                        accept=".bin">
                                 </div>
-                                <div class="float-right">
-                                    <button onclick="upload();" class="btn btn-primary" id="upbtn" disabled="">Update</button>
+                                <div class="float-end">
+                                    <button onclick="upload();" class="btn btn-primary" id="upbtn"
+                                        disabled="">Update</button>
                                 </div>
                             </div>
                         </div>
@@ -253,7 +272,7 @@
         <div class="overlay"></div>
         <script src="js/required.js"></script>
         <script src="js/esprfid.js"></script>
-        <script src="js/boards.js"></script>
         <script>start();</script>
 </body>
+
 </html>

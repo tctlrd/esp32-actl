@@ -1,5 +1,3 @@
-#define MAX_NUM_RELAYS 4
-
 struct Config
 {
     bool dhcpEnabledEth = false;
