@@ -83,8 +83,7 @@
     <legend>General Settings</legend>
     <br>
     <div class="row form-group">
-        <label class="col-xs-3">Admin Password<i style="margin-left: 10px;" class="bi bi-info-circle" aria-hidden="true"
-                tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus"
+        <label class="col-xs-3">Admin Password<i style="margin-left: 10px;" class="bi bi-info-circle" data-bs-toggle="popover"
                 data-bs-content="Log On password for the Administrator"></i></label>
         <span class="col-xs-9 col-md-5">
             <input class="form-control input-sm" placeholder="Administrator Password" id="adminpwd" type="password">
@@ -92,9 +91,8 @@
         <br>
     </div>
     <div class="row form-group">
-        <label class="col-xs-3">Host Name<i style="margin-left: 10px;" class="bi bi-info-circle" aria-hidden="true"
-                tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus"
-                data-bs-content="Hostname for your ESP, When Bonjour is installed on your computer you can access your ESP via http://hostname.local"></i></label>
+        <label class="col-xs-3">Host Name<i style="margin-left: 10px;" class="bi bi-info-circle" data-bs-toggle="popover"
+            data-bs-content="Hostname for your access-control node."></i></label>
         <span class="col-xs-9 col-md-5">
             <input class="form-control input-sm" placeholder="Hostname" value="esp32-actl" id="hostname" type="text">
         </span>
@@ -102,7 +100,7 @@
     </div>
     <div class="row form-group">
         <label class="col-xs-3">Auto Restart
-            <i style="margin-left: 10px;" class="bi bi-info-circle" aria-hidden="true" tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus"
+            <i style="margin-left: 10px;" class="bi bi-info-circle" data-bs-toggle="popover"
                 data-bs-content="How often to automatically restart the unit to lessen risk of memory leaks and crashes."></i>
         </label>
         <span class="col-xs-9 col-md-5">
@@ -120,8 +118,8 @@
         <br>
     </div>
     <div class="row form-group">
-        <label class="col-xs-3">Opening hours<i style="margin-left: 10px;" class="bi bi-info-circle" aria-hidden="true"
-                tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus"
+        <label class="col-xs-3">Opening hours<i style="margin-left: 10px;" class="bi bi-info-circle"
+                data-bs-toggle="popover"
                 data-bs-content="When non-admin users can open the door."></i></label>
         <span class="col-xs-9 col-md-5">
             <table id="openinghours"></table>
@@ -130,7 +128,7 @@
     </div>
     <div class="row form-group">
         <label class="col-xs-3">Opening hours 2<i style="margin-left: 10px;" class="bi bi-info-circle"
-                aria-hidden="true" tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus"
+                data-bs-toggle="popover"
                 data-bs-content="When non-admin users can open the door."></i></label>
         <span class="col-xs-9 col-md-5">
             <table id="openinghours2"></table>
@@ -158,7 +156,7 @@
     <br>
     <div class="row form-group">
         <label class="col-xs-3">Reader Type<i style="margin-left: 10px;" class="glyphicon glyphicon-info-sign"
-                aria-hidden="true" tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus"
+                data-bs-toggle="popover"
                 data-bs-content="Choose RFID reader type."></i></label>
         <div class="col-xs-9 col-md-5">
             <select class="form-control input-sm" id="readertype" onchange="handleReader();">
@@ -175,7 +173,7 @@
     <div class="" id="wiegandForm" style="display:block">
         <div class="row form-group">
             <label class="col-xs-3">Wiegand Bits<i style="margin-left: 10px;" class="bi bi-info-circle"
-                    aria-hidden="true" tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus"
+                    data-bs-toggle="popover"
                     data-bs-content="Choose &quot;Wiegand Bits&quot;."></i></label>
             <span class="col-xs-9 col-md-5">
                 <select class="form-control input-sm" id="wiegandbits">
@@ -190,8 +188,8 @@
             </span>
         </div>
         <div class="row form-group">
-            <label class="col-xs-3">D0 PIN<i style="margin-left: 10px;" class="bi bi-info-circle" aria-hidden="true"
-                    tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus"
+            <label class="col-xs-3">D0 PIN<i style="margin-left: 10px;" class="bi bi-info-circle"
+                    data-bs-toggle="popover"
                     data-bs-content="Choose &quot;Wiegand D0&quot; pin."></i></label>
             <span class="col-xs-9 col-md-5">
                 <input class="form-control input-sm" value="0" placeholder="gpio pin" id="wg0pin" type="number" min="0"
@@ -199,8 +197,8 @@
             </span>
         </div>
         <div class="row form-group">
-            <label class="col-xs-3">D1 Pin<i style="margin-left: 10px;" class="bi bi-info-circle" aria-hidden="true"
-                    tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus"
+            <label class="col-xs-3">D1 Pin<i style="margin-left: 10px;" class="bi bi-info-circle"
+                    data-bs-toggle="popover"
                     data-bs-content="Choose &quot;Wiegand D1&quot; pin."></i></label>
             <span class="col-xs-9 col-md-5">
                 <input class="form-control input-sm" value="0" placeholder="gpio pin" id="wg1pin" type="number" min="0"
@@ -209,7 +207,7 @@
         </div>
         <div class="row form-group">
             <label class="col-xs-3">User ID storage mode<i style="margin-left: 10px;" class="bi bi-info-circle"
-                    aria-hidden="true" tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus"
+                    data-bs-toggle="popover"
                     data-bs-content="IDs stored in decimal can be entered with pin code only mode. It is potentially more insecure."></i></label>
             <span class="col-xs-9 col-md-5">
                 <select class="form-control input-sm" id="useridstoragemode">
@@ -220,7 +218,7 @@
         </div>
         <div class="row form-group">
             <label class="col-xs-3">Require pin code after RFID card<i style="margin-left: 10px;"
-                    class="bi bi-info-circle" aria-hidden="true" data-toggle="popover" data-trigger="hover"
+                    class="bi bi-info-circle" data-toggle="popover" data-trigger="hover"
                     data-bs-content="Pin code is required after having swiped the RFID card."></i></label>
             <span class="col-xs-9 col-md-5">
                 <input type="checkbox" id="requirepincodeafterrfid">
@@ -228,7 +226,7 @@
         </div>
         <div class="row form-group">
             <label class="col-xs-3">Allow pin code only<i style="margin-left: 10px;" class="bi bi-info-circle"
-                    aria-hidden="true" tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus"
+                    data-bs-toggle="popover"
                     data-bs-content="User ID is entered directly with pin pad. Make sure to use long enough IDs to be secure enough."></i></label>
             <span class="col-xs-9 col-md-5">
                 <input type="checkbox" id="allowpincodeonly">
@@ -236,7 +234,7 @@
         </div>
         <div class="row form-group">
             <label class="col-xs-3">Remove parity bits<i style="margin-left: 10px;" class="bi bi-info-circle"
-                    aria-hidden="true" tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus"
+                    data-bs-toggle="popover"
                     data-bs-content="In the Wiegand protocol the first and last bits of a card are parity bits that should be removed. In certain cases you might want to read the entire card number, with parity bits not removed."></i></label>
             <span class="col-xs-9 col-md-5">
                 <input type="checkbox" id="removeparitybits">
@@ -246,7 +244,7 @@
     <div class="" id="rdm6300" style="display:none">
         <div class="row form-group">
             <label class="col-xs-3">RDM6300 TX pin<i style="margin-left: 10px;" class="glyphicon glyphicon-info-sign"
-                    aria-hidden="true" tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus"
+                    data-bs-toggle="popover"
                     data-bs-content="Choose which ESP pin is connected to RDM6300 TX pin"></i></label>
             <span class="col-xs-9 col-md-5">
                 <select class="form-control input-sm" id="rdm6300pin">
@@ -267,7 +265,7 @@
     <div class="" id="mfrc522Form" style="display:none">
         <div class="row form-group">
             <label class="col-xs-3">SPI SS<i style="margin-left: 10px;" class="glyphicon glyphicon-info-sign"
-                    aria-hidden="true" tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus"
+                    data-bs-toggle="popover"
                     data-bs-content="Choose which ESP port is connected to RFID Hardware SDA pin"></i></label>
             <span class="col-xs-9 col-md-5">
                 <select class="form-control input-sm" id="gpioss">
@@ -282,7 +280,7 @@
         </div>
         <div class="row form-group" id="rc522gain">
             <label class="col-xs-3">Antenna Gain<i style="margin-left: 10px;" class="glyphicon glyphicon-info-sign"
-                    aria-hidden="true" tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus"
+                    data-bs-toggle="popover"
                     data-bs-content="Higher value means further the RFID reader's reading distance"></i></label>
             <span class="col-xs-9 col-md-5">
                 <select class="form-control input-sm" id="gain">
@@ -298,8 +296,8 @@
     </div>
     <hr>
     <div class="row form-group">
-        <label class="col-xs-3">WiFi LED Pin<i style="margin-left: 10px;" class="bi bi-info-circle" aria-hidden="true"
-                tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus"
+        <label class="col-xs-3">WiFi LED Pin<i style="margin-left: 10px;" class="bi bi-info-circle"
+                data-bs-toggle="popover"
                 data-bs-content="Choose &quot;WiFi LED&quot; pin"></i></label>
         <span class="col-xs-9 col-md-5">
             <input class="form-control input-sm" value="0" placeholder="gpio pin" id="wifipin" type="number" min="0"
@@ -308,7 +306,7 @@
     </div>
     <div class="row form-group">
         <label class="col-xs-3">Door Status Pin<i style="margin-left: 10px;" class="bi bi-info-circle"
-                aria-hidden="true" tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus"
+                data-bs-toggle="popover"
                 data-bs-content="Choose &quot;Door Status&quot; pin"></i></label>
         <span class="col-xs-9 col-md-5">
             <input class="form-control input-sm" value="0" placeholder="gpio pin" id="doorstatpin" type="number" min="0"
@@ -316,8 +314,8 @@
         </span>
     </div>
     <div class="row form-group">
-        <label class="col-xs-3">Max open time<i style="margin-left: 10px;" class="bi bi-info-circle" aria-hidden="true"
-                tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus"
+        <label class="col-xs-3">Max open time<i style="margin-left: 10px;" class="bi bi-info-circle"
+                data-bs-toggle="popover"
                 data-bs-content="If exceeded - the tamper is triggered. If set to zero - does not apply."></i></label>
         <span class="col-xs-9 col-md-5">
             <input class="form-control input-sm" value="0" placeholder="in seconds" id="maxOpenDoorTime" type="number"
@@ -325,8 +323,8 @@
         </span>
     </div>
     <div class="row form-group">
-        <label class="col-xs-3">Doorbell Pin<i style="margin-left: 10px;" class="bi bi-info-circle" aria-hidden="true"
-                tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus"
+        <label class="col-xs-3">Doorbell Pin<i style="margin-left: 10px;" class="bi bi-info-circle"
+                data-bs-toggle="popover"
                 data-bs-content="Choose &quot;Doorbell&quot; pin"></i></label>
         <span class="col-xs-9 col-md-5">
             <input class="form-control input-sm" value="0" placeholder="gpio pin" id="doorbellpin" type="number" min="0"
@@ -334,8 +332,8 @@
         </span>
     </div>
     <div class="row form-group">
-        <label class="col-xs-3">Open Lock Pin<i style="margin-left: 10px;" class="bi bi-info-circle" aria-hidden="true"
-                tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus"
+        <label class="col-xs-3">Open Lock Pin<i style="margin-left: 10px;" class="bi bi-info-circle"
+                data-bs-toggle="popover"
                 data-bs-content="Choose a pin to have a button with equivalent behaviour to scan a valid card (open/close button)."></i></label>
         <span class="col-xs-9 col-md-5">
             <input class="form-control input-sm" value="0" placeholder="gpio pin" id="openlockpin" type="number" min="0"
@@ -344,7 +342,7 @@
     </div>
     <div class="row form-group">
         <label class="col-xs-3">Access denied LED Pin<i style="margin-left: 10px;" class="bi bi-info-circle"
-                aria-hidden="true" tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus"
+                data-bs-toggle="popover"
                 data-bs-content="Choose &quot;Access denied LED&quot; pin"></i></label>
         <span class="col-xs-9 col-md-5">
             <input class="form-control input-sm" value="0" placeholder="gpio pin" id="accessdeniedpin" type="number"
@@ -352,8 +350,8 @@
         </span>
     </div>
     <div class="row form-group">
-        <label class="col-xs-3">Beeper Pin<i style="margin-left: 10px;" class="bi bi-info-circle" aria-hidden="true"
-                tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus"
+        <label class="col-xs-3">Beeper Pin<i style="margin-left: 10px;" class="bi bi-info-circle"
+                data-bs-toggle="popover"
                 data-bs-content="Choose &quot;Beeper&quot; pin"></i></label>
         <span class="col-xs-9 col-md-5">
             <input class="form-control input-sm" value="0" placeholder="gpio pin" id="beeperpin" type="number" min="0"
@@ -362,7 +360,7 @@
     </div>
     <div class="row form-group">
         <label class="col-xs-3">Waiting LED Pin<i style="margin-left: 10px;" class="bi bi-info-circle"
-                aria-hidden="true" tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus"
+                data-bs-toggle="popover"
                 data-bs-content="Choose &quot;Waiting LED&quot; pin"></i></label>
         <span class="col-xs-9 col-md-5">
             <input class="form-control input-sm" value="0" placeholder="gpio pin" id="ledwaitingpin" type="number"
@@ -372,7 +370,7 @@
     <hr>
     <div class="row form-group">
         <label class="col-xs-3">Number of relays<i style="margin-left: 10px;" class="bi bi-info-circle"
-                aria-hidden="true" tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus"
+                data-bs-toggle="popover"
                 data-bs-content="Choose how many relays your board has"></i></label>
         <span class="col-xs-6 col-md-5">
             <select class="form-control input-sm" id="numrlys">
@@ -385,7 +383,7 @@
         <span class="col-xs-3">
             <button id="changenumrly" type="button" class="btn btn-primary btn-xs"
                 onclick="changeRelayNumber()">update</button><i style="margin-left: 10px;" class="bi bi-info-circle"
-                aria-hidden="true" tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="left"
+                data-bs-toggle="popover" data-bs-placement="left"
                 data-bs-content="Click here to display the right number of forms"></i>
         </span>
     </div>
@@ -395,7 +393,7 @@
             <div id=relaytitle>Relay 1 Settings</div><br><br>
             <div class="row form-group">
                 <label class="col-xs-3">Relay Type<i style="margin-left: 10px;" class="bi bi-info-circle"
-                        aria-hidden="true" tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus"
+                        data-bs-toggle="popover"
                         data-bs-content="Depending on your electrical setup, you can choose the relay type"></i></label>
                 <span class="col-xs-9 col-md-5">
                     <select class="form-control input-sm" id="typerly">
@@ -406,7 +404,7 @@
             </div>
             <div class="row form-group">
                 <label class="col-xs-3">Relay Pin<i style="margin-left: 10px;" class="bi bi-info-circle"
-                        aria-hidden="true" tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus"
+                        data-bs-toggle="popover"
                         data-bs-content="Choose which ESP port is connected to your relay"></i></label>
                 <span class="col-xs-6 col-md-5">
                     <input class="form-control input-sm" value="0" placeholder="gpio pin" id="gpiorly" type="number"
@@ -415,13 +413,13 @@
                 <span class="col-xs-3">
                     <button id="testb" type="button" class="btn btn-primary btn-xs"
                         onclick="testRelay(1)">Test</button><i style="margin-left: 10px;" class="bi bi-info-circle"
-                        aria-hidden="true" tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-placement="left"
+                        data-bs-toggle="popover" data-bs-placement="left"
                         data-bs-content="Test previous relay setting. Keep in mind that this is actually triggers the relay."></i>
                 </span>
             </div>
             <div class="row form-group">
                 <label class="col-xs-3">Lock Type<i style="margin-left: 10px;" class="bi bi-info-circle"
-                        aria-hidden="true" tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus"
+                        data-bs-toggle="popover"
                         data-bs-content="Use momentary method for door lock counterparts, and the continuous one for electromagnetic locks."></i></label>
                 <span class="col-xs-9 col-md-5">
                     <select class="form-control input-sm" id="lockType" onchange="handleLock(1);">
@@ -432,7 +430,7 @@
             </div>
             <div class="row form-group" id="activateTimeForm">
                 <label class="col-xs-3">Activate Time<i style="margin-left: 10px;" class="bi bi-info-circle"
-                        aria-hidden="true" tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus"
+                        data-bs-toggle="popover"
                         data-bs-content="Relay Toggle time in Microseconds, usually 300ms is enough for the most electric door locks"></i></label>
                 <span class="col-xs-9 col-md-5">
                     <input class="form-control input-sm" value="300" placeholder="in Microsecond" id="delay" type="text"
@@ -441,7 +439,7 @@
             </div>
             <div class="row form-group">
                 <label class="col-xs-3">Door Name<i style="margin-left: 10px;" class="bi bi-info-circle"
-                        aria-hidden="true" tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus"
+                        data-bs-toggle="popover"
                         data-bs-content="Define Door Name"></i></label>
                 <span class="col-xs-9 col-md-5">
                     <input class="form-control input-sm" value="Door" placeholder="Define Door Name" id="doorname"
@@ -544,8 +542,8 @@
     <legend>MQTT Settings</legend>
     <br>
     <div class="row form-group">
-        <label class="col-xs-3">MQTT<i style="margin-left: 10px;" class="bi bi-info-circle" aria-hidden="true"
-                tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus"
+        <label class="col-xs-3">MQTT<i style="margin-left: 10px;" class="bi bi-info-circle"
+                data-bs-toggle="popover"
                 data-bs-content="Please choose if you want to enable MQTT"></i></label>
         <div class="col-xs-9">
             <form>
@@ -557,8 +555,8 @@
         </div>
     </div>
     <div class="row form-group">
-        <label class="col-xs-3">IP<i style="margin-left: 10px;" class="bi bi-info-circle" aria-hidden="true"
-                tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus"
+        <label class="col-xs-3">IP<i style="margin-left: 10px;" class="bi bi-info-circle"
+                data-bs-toggle="popover"
                 data-bs-content="MQTT server IP Address or url"></i></label>
         <span class="col-xs-9">
             <input class="form-control input-sm" placeholder="MQTT Host" style="display:inline;max-width:185px"
@@ -567,8 +565,8 @@
         <br>
     </div>
     <div class="row form-group">
-        <label class="col-xs-3">Port<i style="margin-left: 10px;" class="bi bi-info-circle" aria-hidden="true"
-                tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus"
+        <label class="col-xs-3">Port<i style="margin-left: 10px;" class="bi bi-info-circle"
+                data-bs-toggle="popover"
                 data-bs-content="MQTT server port"></i></label>
         <span class="col-xs-9">
             <input class="form-control input-sm" placeholder="MQTT Port" value="" style="display:inline;max-width:185px"
@@ -577,8 +575,8 @@
         <br>
     </div>
     <div class="row form-group">
-        <label class="col-xs-3">User<i style="margin-left: 10px;" class="bi bi-info-circle" aria-hidden="true"
-                tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="MQTT user"></i></label>
+        <label class="col-xs-3">User<i style="margin-left: 10px;" class="bi bi-info-circle"
+                data-bs-toggle="popover" data-bs-content="MQTT user"></i></label>
         <span class="col-xs-9">
             <input class="form-control input-sm" placeholder="" value="" style="display:inline;max-width:185px"
                 id="mqttuser" type="text">
@@ -586,8 +584,8 @@
         <br>
     </div>
     <div class="row form-group">
-        <label class="col-xs-3">Password<i style="margin-left: 10px;" class="bi bi-info-circle" aria-hidden="true"
-                tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus"
+        <label class="col-xs-3">Password<i style="margin-left: 10px;" class="bi bi-info-circle"
+                data-bs-toggle="popover"
                 data-bs-content="MQTT server password if any"></i></label>
         <span class="col-xs-9">
             <input class="form-control input-sm" placeholder="" value="" style="display:inline;max-width:185px"
@@ -596,8 +594,8 @@
         <br>
     </div>
     <div class="row form-group">
-        <label class="col-xs-3">Topic prefix<i style="margin-left: 10px;" class="bi bi-info-circle" aria-hidden="true"
-                tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus"
+        <label class="col-xs-3">Topic prefix<i style="margin-left: 10px;" class="bi bi-info-circle"
+                data-bs-toggle="popover"
                 data-bs-content="Prefix applied to all MQTT topics"></i></label>
         <span class="col-xs-9">
             <input class="form-control input-sm" placeholder="MQTT topic" value=""
@@ -606,16 +604,16 @@
         <br>
     </div>
     <div class="row form-group">
-        <label class="col-xs-3">Auto topic<i style="margin-left: 10px;" class="bi bi-info-circle" aria-hidden="true"
-                tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus"
+        <label class="col-xs-3">Auto topic<i style="margin-left: 10px;" class="bi bi-info-circle"
+                data-bs-toggle="popover"
                 data-bs-content="Automatically add a unique identifier (last 6 digits of MAC address) to the MQTT topic prefix"></i></label>
         <span class="col-xs-9 col-md-5">
             <input type="checkbox" id="mqttautotopic">
         </span>
     </div>
     <div class="row form-group">
-        <label class="col-xs-3">Sync Time(sec)<i style="margin-left: 10px;" class="bi bi-info-circle" aria-hidden="true"
-                tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus" data-bs-content="Sync rate"></i></label>
+        <label class="col-xs-3">Sync Time(sec)<i style="margin-left: 10px;" class="bi bi-info-circle"
+                data-bs-toggle="popover" data-bs-content="Sync rate"></i></label>
         <span class="col-xs-9">
             <input class="form-control input-sm" placeholder="Sync rate" value="" style="display:inline;max-width:185px"
                 id="syncrate" type="text">
@@ -623,8 +621,8 @@
         <br>
     </div>
     <div class="row form-group">
-        <label class="col-xs-3">MQTT logging<i style="margin-left: 10px;" class="bi bi-info-circle" aria-hidden="true"
-                tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus"
+        <label class="col-xs-3">MQTT logging<i style="margin-left: 10px;" class="bi bi-info-circle"
+                data-bs-toggle="popover"
                 data-bs-content="Enable MQTT logging disables logging on device"></i></label>
         <div class="col-xs-9">
             <form>
@@ -636,7 +634,7 @@
     </div>
     <div class="row form-group">
         <label class="col-xs-3">MQTT for Home Assistant<i style="margin-left: 10px;" class="bi bi-info-circle"
-                aria-hidden="true" tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus"
+                data-bs-toggle="popover"
                 data-bs-content="Enable MQTT topics and discovery for Home Assistant"></i></label>
         <div class="col-xs-9">
             <form>
@@ -659,8 +657,8 @@
     <h6 class="text-muted">Type your Wi-Fi Network's SSID or Scan for nerby Wireless Networks to join.</h6>
     <br>
     <div class="row form-group">
-        <label class="col-xs-3">Wi-Fi Mode<i style="margin-left: 10px;" class="bi bi-info-circle" aria-hidden="true"
-                tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus"
+        <label class="col-xs-3">Wi-Fi Mode<i style="margin-left: 10px;" class="bi bi-info-circle"
+                data-bs-toggle="popover"
                 data-bs-content="You can run your ESP in AP Mode or Client Mode. In client mode you will need to connect to an existing Wi-Fi network, in AP Mode ESP creates a Wi-Fi network itself."></i></label>
         <div class="col-xs-9">
             <form>
@@ -673,8 +671,8 @@
         </div>
     </div>
     <div class="row form-group">
-        <label class="col-xs-3">SSID<i style="margin-left: 10px;" class="bi bi-info-circle" aria-hidden="true"
-                tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus"
+        <label class="col-xs-3">SSID<i style="margin-left: 10px;" class="bi bi-info-circle"
+                data-bs-toggle="popover"
                 data-bs-content="Wi-Fi Network's Name"></i></label>
         <span class="col-xs-7 col-md-5">
             <input class="form-control input-sm" id="inputtohide" type="text" name="ap_ssid">
@@ -686,16 +684,16 @@
         </span>
     </div>
     <div class="row form-group" style="display:none" id="hideBSSID">
-        <label class="col-xs-3">BSSID<i style="margin-left: 10px;" class="bi bi-info-circle" aria-hidden="true"
-                tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus"
+        <label class="col-xs-3">BSSID<i style="margin-left: 10px;" class="bi bi-info-circle"
+                data-bs-toggle="popover"
                 data-bs-content="If you have two Wi-Fi networks with the same SSID you may want to choose the specific one by BSSID"></i></label>
         <span class="col-xs-9 col-md-5">
             <input id="wifibssid" class="form-control input-sm" type="text" name="ap_bssid">
         </span>
     </div>
     <div class="row form-group">
-        <label class="col-xs-3">Password<i style="margin-left: 10px;" class="bi bi-info-circle" aria-hidden="true"
-                tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus"
+        <label class="col-xs-3">Password<i style="margin-left: 10px;" class="bi bi-info-circle"
+                data-bs-toggle="popover"
                 data-bs-content="Wi-Fi Password"></i></label>
         <span class="col-xs-9 col-md-5">
             <input id="wifipass" class="form-control input-sm" name="ap_passwd" type="password">
@@ -704,7 +702,7 @@
     <br>
     <div class="row form-group" id="hideap">
         <label class="col-xs-3">Hide Network Name<i style="margin-left: 10px;" class="bi bi-info-circle"
-                aria-hidden="true" tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus"
+                data-bs-toggle="popover"
                 data-bs-content="You can choose to hide Wireless Network name, so your ESP does not broadcast SSID, keep in mind that people can still find your network if they are insist."></i></label>
         <div class="col-xs-9">
             <form>
@@ -717,8 +715,8 @@
     </div>
     <br>
     <div class="row form-group" id="dhcp">
-        <label class="col-xs-3">Use DHCP<i style="margin-left: 10px;" class="bi bi-info-circle" aria-hidden="true"
-                tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus"
+        <label class="col-xs-3">Use DHCP<i style="margin-left: 10px;" class="bi bi-info-circle"
+                data-bs-toggle="popover"
                 data-bs-content="Choose if you want to get an IP address from DHCP server or not."></i></label>
         <div class="col-xs-9">
             <form>
@@ -731,8 +729,8 @@
     </div>
     <div id="staticip1">
         <div class="row form-group">
-            <label class="col-xs-3">IP Address<i style="margin-left: 10px;" class="bi bi-info-circle" aria-hidden="true"
-                    data-html="true" tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus"
+            <label class="col-xs-3">IP Address<i style="margin-left: 10px;" class="bi bi-info-circle"
+                    data-html="true" data-bs-toggle="popover"
                     data-bs-content="Enter IP Address<BR>(for example 192.168.4.1)"></i></label>
             <span class="col-xs-9 col-md-5">
                 <input id="ipaddress" class="form-control input-sm">
@@ -740,7 +738,7 @@
         </div>
         <div class="row form-group">
             <label class="col-xs-3">Subnet Mask<i style="margin-left: 10px;" class="bi bi-info-circle"
-                    aria-hidden="true" data-html="true" data-toggle="popover" data-trigger="hover"
+                    data-html="true" data-bs-toggle="popover"
                     data-bs-content="Enter Subnet Mask<BR>(for example 255.255.255.0)"></i></label>
             <span class="col-xs-9 col-md-5">
                 <input id="subnet" class="form-control input-sm">
@@ -763,7 +761,7 @@
     </div>
     <div class="row form-group">
         <label class="col-xs-3">WIFI fallback mode<i style="margin-left: 10px;" class="bi bi-info-circle"
-                aria-hidden="true" tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus"
+                data-bs-toggle="popover"
                 data-bs-content="Enable fallback mode when not discover WIFI"></i></label>
         <div class="col-xs-9">
             <form name="fallbackmodeForm">
@@ -776,7 +774,7 @@
     <br>
     <div class="row form-group">
         <label class="col-xs-3">Auto Disable Wifi<i style="margin-left: 10px;" class="bi bi-info-circle"
-                aria-hidden="true" tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus"
+                data-bs-toggle="popover"
                 data-bs-content="Disable WiFi after a time interval, to conserve power in battery powered units. WiFi is re-enabled when an admin card is scanned, or device is rebooted. Remember that you need to have enough time to upload your configuration, so don't set it too low."></i></label>
         <span class="col-xs-9 col-md-5">
             <select class="form-control input-sm" id="disable_wifi_after_seconds" name="auto_restart_interval_seconds">
@@ -806,7 +804,7 @@
     <br>
     <div class="row form-group" id="dhcpeth">
         <label class="col-xs-3">Use DHCP<i style="margin-left: 10px;" class="glyphicon glyphicon-info-sign"
-                aria-hidden="true" tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus"
+                data-bs-toggle="popover"
                 data-bs-content="Choose if you want to get an IP address from DHCP server or not."></i></label>
         <div class="col-xs-9">
             <form>
@@ -819,8 +817,8 @@
     </div>
     <div id="staticipeth1">
         <div class="row form-group">
-            <label class="col-xs-3">IP Address<i style="margin-left: 10px;" class="bi bi-info-circle" aria-hidden="true"
-                    data-html="true" tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus"
+            <label class="col-xs-3">IP Address<i style="margin-left: 10px;" class="bi bi-info-circle"
+                    data-html="true" data-bs-toggle="popover"
                     data-bs-content="Enter IP Address<BR>(for example 192.168.4.1)"></i></label>
             <span class="col-xs-9 col-md-5">
                 <input id="ipaddresseth" class="form-control input-sm">
@@ -828,7 +826,7 @@
         </div>
         <div class="row form-group">
             <label class="col-xs-3">Subnet Mask<i style="margin-left: 10px;" class="bi bi-info-circle"
-                    aria-hidden="true" data-html="true" data-toggle="popover" data-trigger="hover"
+                    data-html="true" data-bs-toggle="popover" data-bs-trigger="hover focus"
                     data-bs-content="Enter Subnet Mask<BR>(for example 255.255.255.0)"></i></label>
             <span class="col-xs-9 col-md-5">
                 <input id="subneteth" class="form-control input-sm">
@@ -871,13 +869,13 @@
     <div class="row form-group">
         <div class="col-xs-3">
             <button onclick="syncBrowserTime()" class="btn btn-link btn-sm">Sync Browser Time to Device</button><i
-                style="margin-left: 10px;" class="bi bi-info-circle" aria-hidden="true" tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus"
+                style="margin-left: 10px;" class="bi bi-info-circle" data-bs-toggle="popover"
                 data-bs-content="Send your PC/Phone time to ESP, useful when the ESP does not have Internet connection."></i>
         </div>
     </div>
     <div class="row form-group">
-        <label class="col-xs-3">NTP Server<i style="margin-left: 10px;" class="bi bi-info-circle" aria-hidden="true"
-                tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus"
+        <label class="col-xs-3">NTP Server<i style="margin-left: 10px;" class="bi bi-info-circle"
+                data-bs-toggle="popover"
                 data-bs-content="The server for the time sync. Choose nearest server for better accuracy, see ntp.org for servers nearby."></i></label>
         <span class="col-xs-9 col-md-5">
             <input class="form-control input-sm" placeholder="eg. pool.ntp.org" value="pool.ntp.org" id="ntpserver"
@@ -886,8 +884,8 @@
         <br>
     </div>
     <div class="row form-group">
-        <label class="col-xs-3">Intervals<i style="margin-left: 10px;" class="bi bi-info-circle" aria-hidden="true"
-                tabindex="0" data-bs-toggle="popover" data-bs-trigger="hover focus"
+        <label class="col-xs-3">Intervals<i style="margin-left: 10px;" class="bi bi-info-circle"
+                data-bs-toggle="popover"
                 data-bs-content="Intervals between Time Sync in Minutes"></i></label>
         <span class="col-xs-9 col-md-5">
             <input class="form-control input-sm" placeholder="in Minutes" value="30" id="intervals" type="text">

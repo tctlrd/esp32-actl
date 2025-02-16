@@ -6,8 +6,6 @@ var utcSeconds;
 var data = [];
 var ft;
 var ajaxobj;
-const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]')
-const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl))
 
 var maxNumRelays = 4;
 var numRelays = 1;
@@ -992,7 +990,7 @@ function getContent(contentname) {
         default:
           break;
       }
-      $("[data-toggle=\"popover\"]").popover({
+      $("[data-bs-toggle=\"popover\"]").popover({
         container: "body"
       });
       $(this).hide().fadeIn();
@@ -2456,9 +2454,17 @@ function start() {
         backdrop: "static",
         keyboard: false
       }).modal('show');
+      $("[data-bs-toggle=\"popover\"]").popover({
+        container: "body"
+      });
     }
   });
 }
 
 document.addEventListener("touchstart", handleTouchStart, false);
 document.addEventListener("touchmove", handleTouchMove, false);
+
+document.addEventListener('DOMContentLoaded', function () {
+  const popoverTriggerList = document.querySelectorAll('[data-bs-toggle="popover"]');
+  const popoverList = [...popoverTriggerList].map(popoverTriggerEl => new bootstrap.Popover(popoverTriggerEl));
+});
