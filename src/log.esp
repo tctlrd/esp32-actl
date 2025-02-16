@@ -49,24 +49,20 @@ size_t lastPos; // position counter for fast seek
 
 void sendLogFile(int page, String fileName, int logFileType, AsyncWebSocketClient *client)
 {
-
 	// if we are reading the first page then we reset
 	// the position counter
-
 	if (page == 1)
 		lastPos = 0;
 	float pages;
-	// DynamicJsonDocument root(2048);
 	JsonDocument root;
 	if (logFileType == LOGTYPE_EVENTLOG)
 		root["command"] = "eventlist";
 	if (logFileType == LOGTYPE_LATESTLOG)
 		root["command"] = "latestlist";
 	root["page"] = page;
-	JsonArray items = root["list"] = JsonArray();
+    JsonArray items = root["list"].to<JsonArray>();
 
 	File logFile;
-
 	if (!LittleFS.exists(fileName))
 	{
 		logFile = LittleFS.open(fileName, "w");
@@ -76,12 +72,10 @@ void sendLogFile(int page, String fileName, int logFileType, AsyncWebSocketClien
 	logFile = LittleFS.open(fileName, "r");
 
 	// move the file pointer to the last known position
-
 	logFile.seek(lastPos);
 	int numLines = 0;
 
 	// read in 10 lines or until EOF whatever happens first
-
 	while (logFile.available() && (numLines < ITEMS_PER_PAGE))
 	{
 		String item = String();
@@ -91,11 +85,9 @@ void sendLogFile(int page, String fileName, int logFileType, AsyncWebSocketClien
 	}
 
 	// remember the last position
-
 	lastPos = logFile.position();
 
 	// calculate the number of remaining pages
-
 	if (logFile.available()) // tell bootstrap footable on the client side that there are more pages to come
 	{
 		float bytesPerPageRoughly = (lastPos / page);
@@ -126,15 +118,14 @@ void logMaintenance(String action, String filename, AsyncWebSocketClient *client
 	Serial.printf("[DEBUG] Log Maintenance Action: %s on %s\n", action.c_str(), filename.c_str());
 #endif
 
+	filename = "/" + filename;
 	// delete a file
-
 	if (action == "delete")
 	{
 		LittleFS.remove(filename);
 	}
 
 	// rollover a file, i.e. rename
-
 	if (action == "rollover")
 	{
 		size_t rolloverExtension = 1;
@@ -145,7 +136,6 @@ void logMaintenance(String action, String filename, AsyncWebSocketClient *client
 
 	// split a file, i.e. create two new files of roughly the same size
 	// or at least as big as LittleFS free space allows
-
 	if (action == "split")
 	{
 		size_t rolloverExtension1 = 1;
@@ -166,7 +156,6 @@ void logMaintenance(String action, String filename, AsyncWebSocketClient *client
 		logFile.seek(0);
 
 		// check if we have enough space for the split operation
-
 		if ((LittleFS.totalBytes() - LittleFS.usedBytes()) < (logFile.size() + MIN_LITTLEFS_BYTES))
 		{
 			if (client)
@@ -207,7 +196,7 @@ void sendFileList(int page, AsyncWebSocketClient *client)
 	JsonDocument root;
 	root["command"] = "listfiles";
 	root["page"] = page;
-	JsonArray items = root["list"] = JsonArray();
+    JsonArray items = root["list"].to<JsonArray>();
 
 	size_t first = (page - 1) * FILES_PER_PAGE;
 	size_t last = page * FILES_PER_PAGE;

@@ -1009,11 +1009,11 @@ function backupuser() {
 }
 
 function backupset() {
-  saveLogfile(config, "downloadSet", "esp-rfid-settings.json")
+  saveLogfile(config, "downloadSet", "esp32-actl-settings.json")
 }
 
 function piccBackup(obj) {
-  saveLogfile(obj, "downloadUser", "esp-rfid-users.json")
+  saveLogfile(obj, "downloadUser", "esp32-actl-users.json")
   backupstarted = false;
 }
 
@@ -1086,7 +1086,7 @@ function restoreUser() {
           alert("Not a valid backup file");
           return;
         }
-        if (json.type === "esp-rfid-userbackup") {
+        if (json.type === "esp32-actl-userbackup") {
           var x = confirm("File seems to be valid, do you wish to continue?");
           if (x) {
             recordstorestore = json.list.length;
@@ -1648,6 +1648,7 @@ function restartESP() {
 
 function socketMessageListener(evt) {
   var obj = JSON.parse(evt.data);
+  console.log("[ DEBUG ] Received WebSocket Message:", obj);
   if (obj.hasOwnProperty("command")) {
     switch (obj.command) {
       case "status":
@@ -1669,6 +1670,7 @@ function socketMessageListener(evt) {
         break;
       case "eventlist":
         haspages = obj.haspages;
+        console.log("[ DEBUG ] Event list received:", obj);
         if (haspages === 0) {
           document.getElementById("loading-img").style.display = "none";
           initEventTable();
@@ -1744,7 +1746,7 @@ function socketMessageListener(evt) {
             $(".footable-show").click();
             $(".fooicon-remove").click();
           } else {
-            file.type = "esp-rfid-userbackup";
+            file.type = "esp32-actl-userbackup";
             file.version = "v0.6";
             file.list = data;
             piccBackup(file);
@@ -1753,6 +1755,7 @@ function socketMessageListener(evt) {
         }
         break;
       case "eventlist":
+        console.log("[ DEBUG ] Event list result:", obj);
         document.getElementById("saveeventlogbtn").disabled = true;
         document.getElementById("cleareventlogbtn").disabled = true;
         if (page < haspages && obj.result === true) {
@@ -1830,15 +1833,15 @@ function saveLogfile(obj, anchorElement, filename) {
 }
 
 function saveevent() {
-  file.type = "esp-rfid-eventlog";
+  file.type = "esp32-actl-eventlog";
   file.list = data;
-  saveLogfile(file, "downloadEvent", "esp-rfid-eventlog.json");
+  saveLogfile(file, "downloadEvent", "esp32-actl-eventlog.json");
 }
 
 function savelatest() {
-  file.type = "esp-rfid-accesslog";
+  file.type = "esp32-actl-accesslog";
   file.list = data;
-  saveLogfile(file, "downloadLatest", "esp-rfid-accesslog.json");
+  saveLogfile(file, "downloadLatest", "esp32-actl-accesslog.json");
 }
 
 function clearlatest() {
