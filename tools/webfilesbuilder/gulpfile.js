@@ -10,7 +10,6 @@ const webh = `../../src/webh/`;
 const tpDir = `${websrc}3rdparty/`;
 const prDir = `${websrc}process/`;
 const uiDir = `${websrc}ui/`;
-const mnDir = `${prDir}mini/`;
 const fnDir = `${prDir}final/`;
 const gzDir = `${prDir}gzip/`;
 const directories = [
@@ -19,7 +18,6 @@ const directories = [
     tpDir,
     prDir,
     uiDir,
-    mnDir,
     fnDir,
     gzDir
 ];

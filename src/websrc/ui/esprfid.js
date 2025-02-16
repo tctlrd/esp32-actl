@@ -1396,6 +1396,7 @@ function initLatestLogTable() {
 
 function initUserTable() {
   updateUserModalForm();
+  var ft;
   jQuery(function ($) {
     var $modal = $("#editor-modal"),
       $editor = $("#editor"),
@@ -1631,12 +1632,12 @@ function initUserTable() {
   });
 
   ft = FooTable.get('#usertable');
-  for (var i = 2; i <= maxNumRelays; i++) {
-    if (i <= numRelays) {
-      ft.columns.get("acctype" + i).visible = true;
-    }
-    else {
-      ft.columns.get("acctype" + i).visible = false;
+  if (ft) {
+    for (var i = 2; i <= maxNumRelays; i++) {
+      var column = ft.columns.get("acctype" + i);
+      if (column) {
+        column.visible = i <= numRelays;
+      }
     }
     ft.draw();
   }
