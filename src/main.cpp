@@ -31,7 +31,6 @@ IO2 io2 = IO2(); // set I2C address of MOD-IO2
 #include <Bounce2.h>
 #include <Desfire.h>
 #include "Secrets.h"
-// #include <esp_task_wdt.h>
 #include <Update.h>
 #include "magicnumbers.h"
 #include "config.h"
