@@ -43,6 +43,11 @@ Config config;
 #include "rfid125kHz.h"
 #include <SoftwareSerial.h>
 
+#define PN532_SCK  (14)
+#define PN532_MISO (15)
+#define PN532_MOSI (2)
+int rfidss = 5;
+
 Desfire desfire;
 MFRC522 mfrc522 = MFRC522();
 PN532 pn532;

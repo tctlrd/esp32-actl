@@ -132,12 +132,55 @@ bool loadConfiguration(Config &config)
 		config.numRelays = 1;
 
 	config.readertype = hardware["readertype"];
+	int rfidss;
 	config.pinCodeRequested = false;
 	config.pinCodeOnly = false;
-
-	config.wgd0pin = hardware["wgd0pin"];
-	config.wgd1pin = hardware["wgd1pin"];
-	config.wiegandbits = hardware["wiegandbits"];
+	if (config.readertype == READER_WIEGAND || config.readertype == READER_WIEGAND_RDM6300)
+	{
+		int wgd0pin = hardware["wgd0pin"];
+		int wgd1pin = hardware["wgd1pin"];
+		config.wiegandbits = hardware["wiegandbits"];
+		if (hardware["requirepincodeafterrfid"].is<bool>())
+		{
+			config.pinCodeRequested = hardware["requirepincodeafterrfid"];
+		}
+		if (hardware["allowpincodeonly"].is<bool>())
+		{
+			config.pinCodeOnly = hardware["allowpincodeonly"];
+		}
+		if (hardware["removeparitybits"].is<bool>())
+		{
+			config.removeParityBits = hardware["removeparitybits"];
+		}
+		if (hardware["useridstoragemode"].is<String>())
+		{
+			config.wiegandReadHex = hardware["useridstoragemode"] == "hexadecimal";
+		}
+		setupWiegandReader(wgd0pin, wgd1pin, config.removeParityBits); // also some other settings like weather to use keypad or not, LED pin, BUZZER pin, Wiegand 26/34 version
+	}
+	else if (config.readertype == READER_MFRC522 || config.readertype == READER_MFRC522_RDM6300)
+	{
+		if (hardware["sspin"].is<int>())
+		{
+			rfidss = hardware["sspin"];
+		}
+		int rfidgain = hardware["rfidgain"];
+		setupMFRC522Reader(rfidss, rfidgain);
+	}
+	else if (config.readertype == READER_PN532 || config.readertype == READER_PN532_RDM6300)
+	{
+		if (hardware["sspin"].is<int>())
+		{
+			rfidss = hardware["sspin"];
+		}
+		setupPN532Reader(rfidss);
+	}
+	// RDM6300 can be configured alongside the other readers
+	if (config.readertype > READER_PN532)
+	{
+		int rmd6300TxPin = hardware["rdm6300pin"];
+		setupRDM6300Reader(rmd6300TxPin);
+	}
 
 	if (hardware["requirepincodeafterrfid"].is<bool>())
 	{

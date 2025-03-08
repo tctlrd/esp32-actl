@@ -55,7 +55,7 @@ struct Config
     bool pinCodeOnly = false;
     bool wiegandReadHex = true;
     bool present = false;
-    int readertype = 1;
+    int readertype = 2;
     int relayType[MAX_NUM_RELAYS];
     bool removeParityBits = true;
     IPAddress subnetIp;

@@ -185,7 +185,6 @@ void pn532Read()
 	}
 }
 
-
 /*
  *  Try first to read from RDM6300 hardware. If that received
  *  nothing, check the other configured reader.
@@ -273,7 +272,6 @@ void rfidRead()
 	}
 }
 
-
 /*
  *  Try and read a PIN code from Wiegand hardware
  */
@@ -344,15 +342,13 @@ int weekdayFromMonday(int weekdayFromSunday) {
 	return ( weekdayFromSunday + 5 ) % 7;
 }
 
-
 /*
  *  If we have successfully read an RFID card, check if access
  *  should be granted
  */
 void rfidProcess()
 {
-	if (rfidState == waitingRfid ||
-			(config.pinCodeRequested && rfidState == cardSwiped))
+	if (rfidState == waitingRfid || (config.pinCodeRequested && rfidState == cardSwiped))
 	{
 		return;
 	}
@@ -657,7 +653,7 @@ void setupMFRC522Reader(int rfidss, int rfidgain)
 void setupPN532Reader(int rfidss)
 {
 	// init controller
-	pn532.InitSoftwareSPI(14, 12, 13, rfidss, 0);
+	pn532.InitSoftwareSPI(PN532_SCK, PN532_MISO, PN532_MOSI, rfidss, 0);
 	do
 	{ // pseudo loop (just used for aborting with break;)
 		// Reset the PN532

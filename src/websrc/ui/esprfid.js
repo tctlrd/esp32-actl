@@ -36,11 +36,11 @@ var config = {
     "dnseth": ""
   },
   "hardware": {
-    "readertype": 1,
+    "readertype": 2,
     "wgd0pin": 4,
     "wgd1pin": 5,
     "rdm6300pin": 4,
-    "sspin": 0,
+    "sspin": 5,
     "rfidgain": 32,
     "wifipin": 255,
     "rtype": 1,
@@ -54,7 +54,7 @@ var config = {
     "doorbellpin": 255,
     "accessdeniedpin": 255,
     "useridstoragemode": "hexadecimal",
-    "requirepincodeafterrfid": 1,
+    "requirepincodeafterrfid": 0,
     "allowpincodeonly": 0,
     "removeparitybits": 1,
     "doorstatpin": 255,
